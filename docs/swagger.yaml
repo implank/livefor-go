@@ -1,0 +1,140 @@
+info:
+  contact: {}
+paths:
+  /post/comment/create:
+    post:
+      description: Create a comment
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: post_id
+        in: formData
+        name: post_id
+        required: true
+        type: string
+      - description: content
+        in: formData
+        name: content
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success": true, "message": "用户评论成功"}'
+          schema:
+            type: string
+      tags:
+      - Post
+  /post/comment/list_all_comments:
+    post:
+      description: List all comments
+      parameters:
+      - description: post_id
+        in: formData
+        name: post_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success": true, "message": "获取评论成功"}'
+          schema:
+            type: string
+      tags:
+      - Post
+  /post/create:
+    post:
+      description: Create a post
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: content
+        in: formData
+        name: content
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success": true, "message": "用户发布成功"}'
+          schema:
+            type: string
+      tags:
+      - Post
+  /user/info:
+    post:
+      description: ShowUserInfo
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "查询成功", "data": "model.User"}'
+          schema:
+            type: string
+      tags:
+      - User
+  /user/login:
+    post:
+      description: Login
+      parameters:
+      - description: username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "登录成功"}'
+          schema:
+            type: string
+      tags:
+      - User
+  /user/register:
+    post:
+      description: Register
+      parameters:
+      - description: username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: password1
+        in: formData
+        name: password1
+        required: true
+        type: string
+      - description: password2
+        in: formData
+        name: password2
+        required: true
+        type: string
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "注册成功"}'
+          schema:
+            type: string
+      tags:
+      - User
+swagger: "2.0"

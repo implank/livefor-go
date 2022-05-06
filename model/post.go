@@ -1,0 +1,32 @@
+package model
+
+import "time"
+
+type Post struct {
+	PostID  uint64 `gorm:"primary_key" json:"post_id"`
+	UserID  uint64 `gorm:"not null" json:"user_id"`
+	Title   string `gorm:"size:255" json:"title"`
+	Content string `gorm:"size:4096" json:"content"`
+	Views   uint64 `gorm:"default:0" json:"views"`
+}
+type PostLike struct {
+	PostID uint64 `gorm:"primary_key;auto_increment:false" json:"post_id"`
+	UserID uint64 `gorm:"primary_key;auto_increment:false" json:"user_id"`
+}
+type Comment struct {
+	//gorm.Model
+	CommentID   uint64    `gorm:"primary_key;" json:"comment_id"`
+	UserID      uint64    `gorm:"not null" json:"user_id"`
+	Username    string    `gorm:"size:255 not null" json:"username"`
+	PostID      uint64    `gorm:"not null" json:"post_id"`
+	CommentTime time.Time `json:"comment_time"`
+	Content     string    `gorm:"size:255 not null" json:"content"`
+	OnTop       bool      `gorm:"default:false" json:"on_top"`
+	Like        uint64    `gorm:"default:0" json:"like"`
+	Dislike     uint64    `gorm:"default:0" json:"dislike"`
+}
+type CommentLike struct {
+	CommentID     uint64 `gorm:"primary_key;auto_increment:false;" json:"comment_id"`
+	UserID        uint64 `gorm:"primary_key;auto_increment:false;" json:"user_id"`
+	LikeOrDislike bool   `json:"like_or_dislike"`
+}
