@@ -9,6 +9,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type Testtype struct {
+	Name string      `json:"name"`
+	Tags []model.Tag `json:"tags"`
+}
+
+// Test doc
+// @Description  Test
+// @Accept       json
+// @Produce      json
+// @Tags         User
+// @Param        data  body      Testtype  true  "用户名，密码"
+// @Success      200   {string}  string    "{"status": true, "message": "注册成功"}"
+// @Router       /user/test [post]
+func Test(c *gin.Context) {
+	var data Testtype
+	if err := c.ShouldBindJSON(&data); err != nil {
+		panic(err)
+	}
+	println(data.Name)
+	println(data.Tags)
+	println(data.Tags[0].Name)
+	println(data.Tags[1].Name)
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": data.Name,
+	})
+	return
+}
+
 // Register doc
 // @Description  Register
 // @Tags         User
@@ -86,9 +115,9 @@ func Login(c *gin.Context) {
 // ShowUserInfo doc
 // @Description  ShowUserInfo
 // @Tags         User
-// @Param        user_id   formData  string  true  "user_id"
-// @Success      200       {string}  string  "{"status": true, "message": "查询成功", "data": "model.User"}"
-// @Router /user/info [post]
+// @Param        user_id  formData  string  true  "user_id"
+// @Success      200      {string}  string  "{"status": true, "message": "查询成功", "data": "model.User"}"
+// @Router       /user/info [post]
 func ShowUserInfo(c *gin.Context) {
 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
 	user, notFound := service.QueryUserByUserID(userID)

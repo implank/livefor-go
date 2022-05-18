@@ -10,8 +10,8 @@ import (
 )
 
 func main() {
-	docs.SwaggerInfo.Title = "Xpertise Scholar"
-	docs.SwaggerInfo.Description = "This is Xpertise Scholar's Golang backend."
+	docs.SwaggerInfo.Title = "bbs"
+	docs.SwaggerInfo.Description = "This is bbs's Golang backend."
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}

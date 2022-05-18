@@ -24,9 +24,11 @@ func InitMySQL() (err error) {
 
 		// Post
 		&model.Post{},
-		&model.Comment{},
 		&model.PostLike{},
+		&model.Comment{},
 		&model.CommentLike{},
+		&model.Tag{},
+		&model.PostTag{},
 	)
 	return global.DB.DB().Ping()
 }

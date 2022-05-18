@@ -1,3 +1,40 @@
+definitions:
+  model.CreatePostData:
+    properties:
+      content:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  model.LikeCommentData:
+    properties:
+      comment_id:
+        type: integer
+      like_or_dislike:
+        type: boolean
+      user_id:
+        type: integer
+    type: object
+  model.Tag:
+    properties:
+      name:
+        type: string
+    type: object
+  v1.Testtype:
+    properties:
+      name:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
+    type: object
 info:
   contact: {}
 paths:
@@ -27,9 +64,61 @@ paths:
             type: string
       tags:
       - Post
-  /post/comment/list_all_comments:
+  /post/comment/like:
     post:
-      description: List all comments
+      consumes:
+      - application/json
+      description: Like a comment
+      parameters:
+      - description: LikeCommentData
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.LikeCommentData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success": true, "message": "点赞成功", "commentlike": commentlike}'
+          schema:
+            type: string
+      tags:
+      - Post
+  /post/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a post
+      parameters:
+      - description: "22"
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreatePostData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success": true, "message": "发布成功"}'
+          schema:
+            type: string
+      tags:
+      - Post
+  /post/get_all_tags:
+    post:
+      description: Get all tags
+      responses:
+        "200":
+          description: '{"success": true, "message": "获取标签成功", "tags":tags}'
+          schema:
+            type: string
+      tags:
+      - Post
+  /post/get_post_comments:
+    post:
+      description: Get post comments
       parameters:
       - description: post_id
         in: formData
@@ -38,33 +127,23 @@ paths:
         type: string
       responses:
         "200":
-          description: '{"success": true, "message": "获取评论成功"}'
+          description: '{"success": true, "message": "获取评论成功", "comments":comments}'
           schema:
             type: string
       tags:
       - Post
-  /post/create:
+  /post/get_post_tags:
     post:
-      description: Create a post
+      description: Get post tags
       parameters:
-      - description: user_id
+      - description: post_id
         in: formData
-        name: user_id
-        required: true
-        type: string
-      - description: title
-        in: formData
-        name: title
-        required: true
-        type: string
-      - description: content
-        in: formData
-        name: content
+        name: post_id
         required: true
         type: string
       responses:
         "200":
-          description: '{"success": true, "message": "用户发布成功"}'
+          description: '{"success": true, "message": "获取标签成功", "post_tags":postTags}'
           schema:
             type: string
       tags:
@@ -130,6 +209,27 @@ paths:
         name: email
         required: true
         type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "注册成功"}'
+          schema:
+            type: string
+      tags:
+      - User
+  /user/test:
+    post:
+      consumes:
+      - application/json
+      description: Test
+      parameters:
+      - description: 用户名，密码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/v1.Testtype'
+      produces:
+      - application/json
       responses:
         "200":
           description: '{"status": true, "message": "注册成功"}'
