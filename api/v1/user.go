@@ -35,7 +35,6 @@ func Test(c *gin.Context) {
 		"status":  true,
 		"message": data.Name,
 	})
-	return
 }
 
 // Register doc
@@ -85,7 +84,7 @@ func Register(c *gin.Context) {
 // @Tags         User
 // @Param        username  formData  string  true  "username"
 // @Param        password  formData  string  true  "password"
-// @Success      200       {string}  string  "{"status": true, "message": "登录成功"}"
+// @Success      200       {string}  string  "{"status": true, "message": "登录成功","data": user}"
 // @Router       /user/login [post]
 func Login(c *gin.Context) {
 	username := c.Request.FormValue("username")
@@ -116,7 +115,7 @@ func Login(c *gin.Context) {
 // @Description  ShowUserInfo
 // @Tags         User
 // @Param        user_id  formData  string  true  "user_id"
-// @Success      200      {string}  string  "{"status": true, "message": "查询成功", "data": "model.User"}"
+// @Success      200      {string}  string  "{"status": true, "message": "查询成功", "data": user}"
 // @Router       /user/info [post]
 func ShowUserInfo(c *gin.Context) {
 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)

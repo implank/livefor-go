@@ -16,6 +16,55 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/portal/get_greenbirds": {
+            "post": {
+                "description": "GetGreenbirds",
+                "tags": [
+                    "Portal"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"获取成功\", \"data\": data}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/portal/save_greenbirds": {
+            "post": {
+                "description": "SaveGreenbird",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Portal"
+                ],
+                "parameters": [
+                    {
+                        "description": "新手上路信息",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GreenbirdData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"保存成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/post/comment/create": {
             "post": {
                 "description": "Create a comment",
@@ -204,7 +253,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"status\": true, \"message\": \"查询成功\", \"data\": \"model.User\"}",
+                        "description": "{\"status\": true, \"message\": \"查询成功\", \"data\": user}",
                         "schema": {
                             "type": "string"
                         }
@@ -236,7 +285,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"status\": true, \"message\": \"登录成功\"}",
+                        "description": "{\"status\": true, \"message\": \"登录成功\",\"data\": user}",
                         "schema": {
                             "type": "string"
                         }
@@ -342,6 +391,31 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.Greenbird": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "order": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GreenbirdData": {
+            "type": "object",
+            "properties": {
+                "greenBirds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Greenbird"
+                    }
                 }
             }
         },

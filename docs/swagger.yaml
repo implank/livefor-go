@@ -12,6 +12,22 @@ definitions:
       user_id:
         type: integer
     type: object
+  model.Greenbird:
+    properties:
+      content:
+        type: string
+      order:
+        type: integer
+      title:
+        type: string
+    type: object
+  model.GreenbirdData:
+    properties:
+      greenBirds:
+        items:
+          $ref: '#/definitions/model.Greenbird'
+        type: array
+    type: object
   model.LikeCommentData:
     properties:
       comment_id:
@@ -38,6 +54,37 @@ definitions:
 info:
   contact: {}
 paths:
+  /portal/get_greenbirds:
+    post:
+      description: GetGreenbirds
+      responses:
+        "200":
+          description: '{"status": true, "message": "获取成功", "data": data}'
+          schema:
+            type: string
+      tags:
+      - Portal
+  /portal/save_greenbirds:
+    post:
+      consumes:
+      - application/json
+      description: SaveGreenbird
+      parameters:
+      - description: 新手上路信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.GreenbirdData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"status": true, "message": "保存成功"}'
+          schema:
+            type: string
+      tags:
+      - Portal
   /post/comment/create:
     post:
       description: Create a comment
@@ -159,7 +206,7 @@ paths:
         type: string
       responses:
         "200":
-          description: '{"status": true, "message": "查询成功", "data": "model.User"}'
+          description: '{"status": true, "message": "查询成功", "data": user}'
           schema:
             type: string
       tags:
@@ -180,7 +227,7 @@ paths:
         type: string
       responses:
         "200":
-          description: '{"status": true, "message": "登录成功"}'
+          description: '{"status": true, "message": "登录成功","data": user}'
           schema:
             type: string
       tags:

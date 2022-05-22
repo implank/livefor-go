@@ -15,8 +15,8 @@ import (
 // @Tags         Post
 // @Accept       json
 // @Produce      json
-// @Param        data  body  model.CreatePostData  true  "22"
-// @Success			 200		{string}	string	"{"success": true, "message": "发布成功"}"
+// @Param        data  body      model.CreatePostData  true  "22"
+// @Success      200   {string}  string                "{"success": true, "message": "发布成功"}"
 // @Router       /post/create [post]
 func CreatePost(c *gin.Context) {
 	var data model.CreatePostData
@@ -83,8 +83,8 @@ func CreateComment(c *gin.Context) {
 // @Tags         Post
 // @Accept       json
 // @Produce      json
-// @Param        data  body  model.LikeCommentData  true  "LikeCommentData"
-// @Success			 200		{string}	string	"{"success": true, "message": "点赞成功", "commentlike": commentlike}"
+// @Param        data  body      model.LikeCommentData  true  "LikeCommentData"
+// @Success      200   {string}  string                 "{"success": true, "message": "点赞成功", "commentlike": commentlike}"
 // @Router       /post/comment/like [post]
 func LikeComment(c *gin.Context) {
 	var data model.LikeCommentData
@@ -157,7 +157,7 @@ func GetPostTags(c *gin.Context) {
 // GetAllTags doc
 // @description  Get all tags
 // @Tags         Post
-// @Success      200      {string}  string  "{"success": true, "message": "获取标签成功", "tags":tags}"
+// @Success      200  {string}  string  "{"success": true, "message": "获取标签成功", "tags":tags}"
 // @Router       /post/get_all_tags [post]
 func GetAllTags(c *gin.Context) {
 	tags, err := service.QueryAllTags()

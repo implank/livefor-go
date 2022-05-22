@@ -29,6 +29,9 @@ func InitMySQL() (err error) {
 		&model.CommentLike{},
 		&model.Tag{},
 		&model.PostTag{},
+
+		//portal
+		&model.Greenbird{},
 	)
 	return global.DB.DB().Ping()
 }

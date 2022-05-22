@@ -6,15 +6,18 @@ type Post struct {
 	PostID  uint64 `gorm:"primary_key" json:"post_id"`
 	UserID  uint64 `gorm:"not null" json:"user_id"`
 	Title   string `gorm:"size:255" json:"title"`
-	Content string `gorm:"size:4096" json:"content"`
+	Content string `gorm:"type:text" json:"content"`
 	Views   uint64 `gorm:"default:0" json:"views"`
+	Like    uint64 `gorm:"default:0" json:"like"`
+	Dislike uint64 `gorm:"default:0" json:"dislike"`
+	Section uint64 `gorm:"not null" json:"section"`
 }
 type PostLike struct {
-	PostID uint64 `gorm:"primary_key;auto_increment:false" json:"post_id"`
-	UserID uint64 `gorm:"primary_key;auto_increment:false" json:"user_id"`
+	PostID        uint64 `gorm:"primary_key;auto_increment:false" json:"post_id"`
+	UserID        uint64 `gorm:"primary_key;auto_increment:false" json:"user_id"`
+	LikeOrDislike bool   `gorm:"not null" json:"like_or_dislike"`
 }
 type Comment struct {
-	//gorm.Model
 	CommentID   uint64    `gorm:"primary_key;" json:"comment_id"`
 	UserID      uint64    `gorm:"not null" json:"user_id"`
 	Username    string    `gorm:"size:255 not null" json:"username"`
@@ -28,7 +31,7 @@ type Comment struct {
 type CommentLike struct {
 	CommentID     uint64 `gorm:"primary_key;auto_increment:false;" json:"comment_id"`
 	UserID        uint64 `gorm:"primary_key;auto_increment:false;" json:"user_id"`
-	LikeOrDislike bool   `json:"like_or_dislike"`
+	LikeOrDislike bool   `gorm:"not null" json:"like_or_dislike"`
 }
 type Tag struct {
 	Name string `gorm:"primary_key;size:255" json:"name"`
