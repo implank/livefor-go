@@ -133,3 +133,105 @@ func ShowUserInfo(c *gin.Context) {
 		"data":    user,
 	})
 }
+
+// UpdatePassword doc
+// @Description  UpdatePassword
+// @Tags         User
+// @Param        user_id  formData  string  true  "user_id"
+// @Param        old_password  formData  string  true  "old_password"
+// @Param        password1  formData  string  true  "password1"
+// @Param        password2  formData  string  true  "password2"
+// @Success			200      {string}  string  "{"status": true, "message": "修改成功"}"
+// @Router       /user/update_password [post]
+func UpdatePassword(c *gin.Context) {
+	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	oldPassword := c.Request.FormValue("old_password")
+	password1 := c.Request.FormValue("password1")
+	password2 := c.Request.FormValue("password2")
+	if oldPassword == password1 {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  false,
+			"message": "新密码不能与旧密码相同",
+		})
+		return
+	}
+	if password1 != password2 {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  false,
+			"message": "两次输入的密码不一致",
+		})
+		return
+	}
+	user, notFound := service.QueryUserByUserID(userID)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  false,
+			"message": "用户不存在",
+		})
+		return
+	}
+	if user.Password != oldPassword {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  false,
+			"message": "旧密码错误",
+		})
+		return
+	}
+	user.Password = password1
+	service.UpdateUser(&user)
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "修改成功",
+	})
+}
+
+// UpdateInfo doc
+// @Description  UpdateInfo
+// @Tags         User
+// @Param        user_id  formData  string  true  "user_id"
+// @Param        username  formData  string  true  "username"
+// @Param        email  formData  string  true  "email"
+// @Param        sex  formData  string  true  "sex"
+// @Param        age  formData  string  true  "age"
+// @Success			200      {string}  string  "{"status": true, "message": "修改成功"}"
+// @Router       /user/update_info [post]
+func UpdateInfo(c *gin.Context) {
+	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	username := c.Request.FormValue("username")
+	email := c.Request.FormValue("email")
+	sex := c.Request.FormValue("sex")
+	age, _ := strconv.ParseUint(c.Request.FormValue("age"), 0, 64)
+	user, notFound := service.QueryUserByUserID(userID)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  false,
+			"message": "用户不存在",
+		})
+		return
+	}
+	puser, notFound := service.QueryUserByUsername(username)
+	if !notFound && puser.UserID != user.UserID {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  false,
+			"message": "用户名已存在",
+		})
+		return
+	}
+	puser, notFound = service.QueryUserByEmail(email)
+	if !notFound && puser.UserID != user.UserID {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  false,
+			"message": "邮箱已存在",
+		})
+		return
+	}
+	user.Username = username
+	user.Email = email
+	user.Sex = sex
+	user.Age = age
+	service.UpdateUser(&user)
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "修改成功",
+	})
+}

@@ -11,4 +11,6 @@ type User struct {
 	Exp       uint64    `gorm:"not null default:0" json:"exp"`
 	Ban       bool      `gorm:"default:false" json:"ban"`
 	Bandate   time.Time `gorm:"default:0" json:"bandate"`
+	Sex       string    `gorm:"type:varchar(255)" json:"sex"`
+	Age       uint64    `gorm:"null" json:"age"`
 }

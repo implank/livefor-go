@@ -284,4 +284,71 @@ paths:
             type: string
       tags:
       - User
+  /user/update_info:
+    post:
+      description: UpdateInfo
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: sex
+        in: formData
+        name: sex
+        required: true
+        type: string
+      - description: age
+        in: formData
+        name: age
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "修改成功"}'
+          schema:
+            type: string
+      tags:
+      - User
+  /user/update_password:
+    post:
+      description: UpdatePassword
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: old_password
+        in: formData
+        name: old_password
+        required: true
+        type: string
+      - description: password1
+        in: formData
+        name: password1
+        required: true
+        type: string
+      - description: password2
+        in: formData
+        name: password2
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "修改成功"}'
+          schema:
+            type: string
+      tags:
+      - User
 swagger: "2.0"
