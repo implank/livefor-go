@@ -10,7 +10,7 @@ type User struct {
 	UserLevel uint64    `gorm:"not null default:0" json:"user_level"`
 	Exp       uint64    `gorm:"not null default:0" json:"exp"`
 	Ban       bool      `gorm:"default:false" json:"ban"`
-	Bandate   time.Time `gorm:"default:0" json:"bandate"`
+	Bandate   time.Time `gorm:"default:Now()" json:"bandate"`
 	Sex       string    `gorm:"type:varchar(255)" json:"sex"`
 	Age       uint64    `gorm:"null" json:"age"`
 }
