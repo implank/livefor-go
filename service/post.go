@@ -13,11 +13,11 @@ func CreatePost(post *model.Post) (err error) {
 	}
 	return
 }
-func QueryPost(postID int64) (post model.Post, notFound bool) {
+func QueryPost(postID uint64) (post model.Post, notFound bool) {
 	notFound = global.DB.First(&post, postID).RecordNotFound()
 	return post, notFound
 }
-func DeletePost(postID int64) (err error) {
+func DeletePost(postID uint64) (err error) {
 	var post model.Post
 	notFound := global.DB.First(&post, postID).RecordNotFound()
 	if notFound {
@@ -26,6 +26,14 @@ func DeletePost(postID int64) (err error) {
 	err = global.DB.Delete(&post).Error
 	return err
 }
+func GetPosts(off uint64, len uint64, section uint64) (post []model.Post) {
+	global.DB.Order("last_comment_time desc").Where("section=?", section).Limit(len).Offset(off).Find(&post)
+	return post
+}
+func GetUserPosts(userID uint64, off uint64, len uint64) (post []model.Post) {
+	global.DB.Order("create_time desc").Where("user_id = ?", userID).Limit(len).Offset(off).Find(&post)
+	return post
+}
 func CreatePostTag(postTag *model.PostTag) (err error) {
 	if err = global.DB.Create(postTag).Error; err != nil {
 		return err
@@ -33,13 +41,17 @@ func CreatePostTag(postTag *model.PostTag) (err error) {
 	return
 }
 func CreateTag(tag *model.Tag) (err error) {
+	_, notFound := QueryTag(tag.Name)
+	if !notFound {
+		return
+	}
 	if err = global.DB.Create(tag).Error; err != nil {
 		return err
 	}
 	return
 }
-func QueryTag(name string) (tag *model.Tag, notFound bool) {
-	notFound = global.DB.First(tag, name).RecordNotFound()
+func QueryTag(name string) (tag model.Tag, notFound bool) {
+	notFound = global.DB.First(&tag, name).RecordNotFound()
 	return tag, notFound
 }
 func QueryPostTags(postID uint64) (postTags []model.PostTag, err error) {

@@ -16,6 +16,47 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/portal/ban_user": {
+            "post": {
+                "description": "BanUser",
+                "tags": [
+                    "Portal"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"禁言成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/portal/get_banned_users": {
+            "post": {
+                "description": "GetBannedUsers",
+                "tags": [
+                    "Portal"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"获取成功\", \"users\": users}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/portal/get_greenbirds": {
             "post": {
                 "description": "GetGreenbirds",
@@ -163,6 +204,45 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"success\": true, \"message\": \"发布成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/get": {
+            "post": {
+                "description": "Get posts with offset and length",
+                "tags": [
+                    "Post"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "length",
+                        "name": "length",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "section",
+                        "name": "section",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\": true, \"message\": \"获取文章成功\", \"posts\": posts}",
                         "schema": {
                             "type": "string"
                         }
@@ -478,6 +558,9 @@ const docTemplate = `{
             "properties": {
                 "content": {
                     "type": "string"
+                },
+                "section": {
+                    "type": "integer"
                 },
                 "tags": {
                     "type": "array",

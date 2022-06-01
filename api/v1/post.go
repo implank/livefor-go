@@ -23,10 +23,26 @@ func CreatePost(c *gin.Context) {
 	if err := c.ShouldBindJSON(&data); err != nil {
 		panic(err)
 	}
+	user, notFound := service.QueryUserByUserID(data.UserID)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "用户不存在",
+		})
+		return
+	}
+	if user.Bandate.After(time.Now()) {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "用户禁言中",
+		})
+		return
+	}
 	post := model.Post{
 		UserID:  data.UserID,
 		Title:   data.Title,
 		Content: data.Content,
+		Section: data.Section,
 	}
 	service.CreatePost(&post)
 	tags := data.Tags
@@ -41,6 +57,26 @@ func CreatePost(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "发布成功",
+	})
+}
+
+// GetPosts doc
+// @description  Get posts with offset and length
+// @Tags         Post
+// @Param        offset  formData  string  true  "offset"
+// @Param        length  formData  string  true  "length"
+// @Param                                        section  formData  string  true  "section"
+// @Success      200     {string}  string  "{"success": true, "message": "获取文章成功", "posts": posts}"
+// @Router       /post/get [post]
+func GetPosts(c *gin.Context) {
+	off, _ := strconv.ParseUint(c.Request.FormValue("offset"), 0, 64)
+	len, _ := strconv.ParseUint(c.Request.FormValue("length"), 0, 64)
+	section, _ := strconv.ParseUint(c.Request.FormValue("section"), 0, 64)
+	posts := service.GetPosts(off, len, section)
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "获取文章成功",
+		"posts":   posts,
 	})
 }
 

@@ -3,14 +3,16 @@ package model
 import "time"
 
 type Post struct {
-	PostID  uint64 `gorm:"primary_key" json:"post_id"`
-	UserID  uint64 `gorm:"not null" json:"user_id"`
-	Title   string `gorm:"size:255" json:"title"`
-	Content string `gorm:"type:text" json:"content"`
-	Views   uint64 `gorm:"default:0" json:"views"`
-	Like    uint64 `gorm:"default:0" json:"like"`
-	Dislike uint64 `gorm:"default:0" json:"dislike"`
-	Section uint64 `gorm:"not null" json:"section"`
+	PostID          uint64    `gorm:"primary_key" json:"post_id"`
+	UserID          uint64    `gorm:"not null" json:"user_id"`
+	Title           string    `gorm:"size:255" json:"title"`
+	Content         string    `gorm:"type:text" json:"content"`
+	Views           uint64    `gorm:"default:0" json:"views"`
+	Like            uint64    `gorm:"default:0" json:"like"`
+	Dislike         uint64    `gorm:"default:0" json:"dislike"`
+	Section         uint64    `gorm:"default:0" json:"section"`
+	CreateTime      time.Time `gorm:"default:Now()" json:"create_time"`
+	LastCommentTime time.Time `gorm:"default:Now()" json:"last_comment_time"`
 }
 type PostLike struct {
 	PostID        uint64 `gorm:"primary_key;auto_increment:false" json:"post_id"`
@@ -46,6 +48,7 @@ type CreatePostData struct {
 	UserID  uint64 `json:"user_id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
+	Section uint64 `json:"section"`
 	Tags    []Tag  `json:"tags"`
 }
 type LikeCommentData CommentLike

@@ -3,6 +3,8 @@ definitions:
     properties:
       content:
         type: string
+      section:
+        type: integer
       tags:
         items:
           $ref: '#/definitions/model.Tag'
@@ -54,6 +56,32 @@ definitions:
 info:
   contact: {}
 paths:
+  /portal/ban_user:
+    post:
+      description: BanUser
+      parameters:
+      - description: 用户ID
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: '{"status": true, "message": "禁言成功"}'
+          schema:
+            type: string
+      tags:
+      - Portal
+  /portal/get_banned_users:
+    post:
+      description: GetBannedUsers
+      responses:
+        "200":
+          description: '{"status": true, "message": "获取成功", "users": users}'
+          schema:
+            type: string
+      tags:
+      - Portal
   /portal/get_greenbirds:
     post:
       description: GetGreenbirds
@@ -149,6 +177,32 @@ paths:
       responses:
         "200":
           description: '{"success": true, "message": "发布成功"}'
+          schema:
+            type: string
+      tags:
+      - Post
+  /post/get:
+    post:
+      description: Get posts with offset and length
+      parameters:
+      - description: offset
+        in: formData
+        name: offset
+        required: true
+        type: string
+      - description: length
+        in: formData
+        name: length
+        required: true
+        type: string
+      - description: section
+        in: formData
+        name: section
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success": true, "message": "获取文章成功", "posts": posts}'
           schema:
             type: string
       tags:

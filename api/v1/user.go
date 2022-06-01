@@ -41,8 +41,8 @@ func Test(c *gin.Context) {
 // @Description  Register
 // @Tags         User
 // @Param        username   formData  string  true  "username"
-// @Param        password1  formData  string  true  "password1"
-// @Param        password2  formData  string  true  "password2"
+// @Param        password1     formData  string  true      "password1"
+// @Param        password2     formData  string  true      "password2"
 // @Param        email      formData  string  true  "email"
 // @Success      200        {string}  string  "{"status": true, "message": "注册成功"}"
 // @Router       /user/register [post]
@@ -82,7 +82,7 @@ func Register(c *gin.Context) {
 // Login doc
 // @Description  Login
 // @Tags         User
-// @Param        username  formData  string  true  "username"
+// @Param        username  formData  string  true      "username"
 // @Param        password  formData  string  true  "password"
 // @Success      200       {string}  string  "{"status": true, "message": "登录成功","data": user}"
 // @Router       /user/login [post]
@@ -114,7 +114,7 @@ func Login(c *gin.Context) {
 // ShowUserInfo doc
 // @Description  ShowUserInfo
 // @Tags         User
-// @Param        user_id  formData  string  true  "user_id"
+// @Param        user_id       formData  string  true      "user_id"
 // @Success      200      {string}  string  "{"status": true, "message": "查询成功", "data": user}"
 // @Router       /user/info [post]
 func ShowUserInfo(c *gin.Context) {
@@ -137,11 +137,11 @@ func ShowUserInfo(c *gin.Context) {
 // UpdatePassword doc
 // @Description  UpdatePassword
 // @Tags         User
-// @Param        user_id  formData  string  true  "user_id"
-// @Param        old_password  formData  string  true  "old_password"
+// @Param        user_id   formData  string  true      "user_id"
+// @Param        old_password  formData  string  true      "old_password"
 // @Param        password1  formData  string  true  "password1"
 // @Param        password2  formData  string  true  "password2"
-// @Success			200      {string}  string  "{"status": true, "message": "修改成功"}"
+// @Success                              200     {string}  string  "{"status": true, "message": "修改成功"}"
 // @Router       /user/update_password [post]
 func UpdatePassword(c *gin.Context) {
 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
@@ -190,10 +190,10 @@ func UpdatePassword(c *gin.Context) {
 // @Tags         User
 // @Param        user_id  formData  string  true  "user_id"
 // @Param        username  formData  string  true  "username"
-// @Param        email  formData  string  true  "email"
-// @Param        sex  formData  string  true  "sex"
-// @Param        age  formData  string  true  "age"
-// @Success			200      {string}  string  "{"status": true, "message": "修改成功"}"
+// @Param        email     formData  string  true      "email"
+// @Param        sex       formData  string  true      "sex"
+// @Param        age       formData  string  true      "age"
+// @Success                          200     {string}  string  "{"status": true, "message": "修改成功"}"
 // @Router       /user/update_info [post]
 func UpdateInfo(c *gin.Context) {
 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)

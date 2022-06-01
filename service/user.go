@@ -3,6 +3,7 @@ package service
 import (
 	"gin-project/global"
 	"gin-project/model"
+	"time"
 )
 
 func QueryUserByUsername(username string) (user model.User, notFound bool) {
@@ -26,4 +27,8 @@ func CreateUser(user *model.User) (err error) {
 		return err
 	}
 	return
+}
+func GetBannedUsers() (users []model.User, err error) {
+	err = global.DB.Where("bandate > ?", time.Now()).Find(&users).Error
+	return users, err
 }

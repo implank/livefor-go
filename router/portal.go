@@ -11,5 +11,7 @@ func InitPortalRouter(Router *gin.RouterGroup) {
 	{
 		PortalRouter.POST("/save_greenbirds", v1.SaveGreenbird)
 		PortalRouter.POST("/get_greenbirds", v1.GetGreenbird)
+		PortalRouter.POST("/ban_user", v1.BanUser)
+		PortalRouter.POST("/get_banned_users", v1.GetBannedUsers)
 	}
 }
