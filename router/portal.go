@@ -13,5 +13,6 @@ func InitPortalRouter(Router *gin.RouterGroup) {
 		PortalRouter.POST("/get_greenbirds", v1.GetGreenbird)
 		PortalRouter.POST("/ban_user", v1.BanUser)
 		PortalRouter.POST("/get_banned_users", v1.GetBannedUsers)
+		PortalRouter.POST("/upload_file", v1.UploadFile)
 	}
 }
