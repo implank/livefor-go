@@ -12,5 +12,6 @@ type User struct {
 	Ban       bool      `gorm:"default:false" json:"ban"`
 	Bandate   time.Time `gorm:"default:Now()" json:"bandate"`
 	Sex       string    `gorm:"type:varchar(255)" json:"sex"`
-	Age       uint64    `gorm:"null" json:"age"`
+	Age       uint64    `gorm:"default:0" json:"age"`
+	AvatarUrl string    `gorm:"default:null" json:"avatar_url"`
 }

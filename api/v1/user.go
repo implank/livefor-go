@@ -1,10 +1,15 @@
 package v1
 
 import (
+	"fmt"
 	"gin-project/model"
 	"gin-project/service"
+	"gin-project/util"
 	"net/http"
+	"path"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -233,5 +238,26 @@ func UpdateInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  true,
 		"message": "修改成功",
+	})
+}
+
+func UploadAvatar(c *gin.Context) {
+	_, header, _ := c.Request.FormFile("image")
+	userid, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	user, _ := service.QueryUserByUserID(userid)
+	raw := fmt.Sprintf("%d", userid) + time.Now().String() + header.Filename
+	md5 := util.GetMd5(raw)
+	suffix := strings.Split(header.Filename, ".")[1]
+	saveDir := "./media/avatars"
+	saveName := md5 + "." + suffix
+	savePath := path.Join(saveDir, saveName)
+	c.SaveUploadedFile(header, savePath)
+	url := "http://43.138.77.133:81/media/avatars" + saveName
+	user.AvatarUrl = url
+	service.UpdateUser(&user)
+	c.JSON(http.StatusOK, gin.H{
+		"success":    true,
+		"message":    "上传成功",
+		"avatar_url": url,
 	})
 }

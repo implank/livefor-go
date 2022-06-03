@@ -14,6 +14,7 @@ func InitUserRouter(Router *gin.RouterGroup) {
 		UserRouter.POST("/info", v1.ShowUserInfo)
 		UserRouter.POST("/update_password", v1.UpdatePassword)
 		UserRouter.POST("/update_info", v1.UpdateInfo)
+		UserRouter.POST("/upload_avatar", v1.UploadAvatar)
 		UserRouter.POST("/test", v1.Test)
 	}
 }
