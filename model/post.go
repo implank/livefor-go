@@ -5,11 +5,13 @@ import "time"
 type Post struct {
 	PostID          uint64    `gorm:"primary_key" json:"post_id"`
 	UserID          uint64    `gorm:"not null" json:"user_id"`
+	Username        string    `gorm:"size:255 not null" json:"username"`
 	Title           string    `gorm:"size:255" json:"title"`
 	Content         string    `gorm:"type:text" json:"content"`
 	Views           uint64    `gorm:"default:0" json:"views"`
 	Like            uint64    `gorm:"default:0" json:"like"`
 	Dislike         uint64    `gorm:"default:0" json:"dislike"`
+	Comment         uint64    `gorm:"default:0" json:"comment"`
 	Section         uint64    `gorm:"default:0" json:"section"`
 	CreateTime      time.Time `gorm:"default:Now()" json:"create_time"`
 	LastCommentTime time.Time `gorm:"default:Now()" json:"last_comment_time"`

@@ -164,7 +164,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a post
+      description: Create a post --note-- section in [0,3]
       parameters:
       - description: "22"
         in: body
@@ -190,14 +190,19 @@ paths:
         name: offset
         required: true
         type: string
-      - description: length
+      - description: length recommended 10
         in: formData
         name: length
         required: true
         type: string
-      - description: section
+      - description: section in [0,3]
         in: formData
         name: section
+        required: true
+        type: string
+      - description: order in [
+        in: formData
+        name: order
         required: true
         type: string
       responses:
@@ -224,6 +229,16 @@ paths:
       - description: post_id
         in: formData
         name: post_id
+        required: true
+        type: string
+      - description: offset
+        in: formData
+        name: offset
+        required: true
+        type: string
+      - description: length
+        in: formData
+        name: length
         required: true
         type: string
       responses:
@@ -360,12 +375,10 @@ paths:
       - description: sex
         in: formData
         name: sex
-        required: true
         type: string
       - description: age
         in: formData
         name: age
-        required: true
         type: string
       responses:
         "200":

@@ -11,7 +11,7 @@ import (
 )
 
 // CreatePost doc
-// @description  Create a post
+// @description  Create a post --note-- section in [0,3]
 // @Tags         Post
 // @Accept       json
 // @Produce      json
@@ -39,10 +39,11 @@ func CreatePost(c *gin.Context) {
 		return
 	}
 	post := model.Post{
-		UserID:  data.UserID,
-		Title:   data.Title,
-		Content: data.Content,
-		Section: data.Section,
+		UserID:   data.UserID,
+		Username: user.Username,
+		Title:    data.Title,
+		Content:  data.Content,
+		Section:  data.Section,
 	}
 	service.CreatePost(&post)
 	tags := data.Tags
@@ -64,19 +65,32 @@ func CreatePost(c *gin.Context) {
 // @description  Get posts with offset and length
 // @Tags         Post
 // @Param        offset  formData  string  true  "offset"
-// @Param        length  formData  string  true  "length"
-// @Param                                        section  formData  string  true  "section"
+// @Param        length  formData  string  true  "length recommended 10"
+// @Param        section  formData  string  true  "section in [0,3]"
+// @Param 			 order  formData  string  true  "order in ["hot","new"]"
 // @Success      200     {string}  string  "{"success": true, "message": "获取文章成功", "posts": posts}"
 // @Router       /post/get [post]
 func GetPosts(c *gin.Context) {
 	off, _ := strconv.ParseUint(c.Request.FormValue("offset"), 0, 64)
 	len, _ := strconv.ParseUint(c.Request.FormValue("length"), 0, 64)
 	section, _ := strconv.ParseUint(c.Request.FormValue("section"), 0, 64)
-	posts := service.GetPosts(off, len, section)
+	order := c.Request.FormValue("order")
+	if order == "new" {
+		order = "create_time desc"
+	} else if order == "top" {
+		order = "last_comment_time desc"
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "order参数错误",
+		})
+	}
+	posts, count := service.GetPosts(off, len, section, order)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "获取文章成功",
 		"posts":   posts,
+		"count":   count,
 	})
 }
 
@@ -101,6 +115,10 @@ func CreateComment(c *gin.Context) {
 		Content:     content,
 	}
 	err := service.CreateComment(&comment)
+	post, _ := service.QueryPost(postID)
+	post.Comment += 1
+	post.LastCommentTime = comment.CommentTime
+	service.UpdatePost(&post)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -148,11 +166,15 @@ func LikeComment(c *gin.Context) {
 // @description  Get post comments
 // @Tags         Post
 // @Param        post_id  formData  string  true  "post_id"
+// @Param 			 offset formData  string  true  "offset"
+// @Param 			 length formData  string  true  "length"
 // @Success      200      {string}  string  "{"success": true, "message": "获取评论成功", "comments":comments}"
 // @Router       /post/get_post_comments [post]
 func GetPostComments(c *gin.Context) {
 	postID, _ := strconv.ParseUint(c.Request.FormValue("post_id"), 0, 64)
-	comments, err := service.QueryPostComments(postID)
+	off, _ := strconv.ParseUint(c.Request.FormValue("offset"), 0, 64)
+	len, _ := strconv.ParseUint(c.Request.FormValue("length"), 0, 64)
+	comments, count, err := service.GetPostComments(off, len, postID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -160,10 +182,21 @@ func GetPostComments(c *gin.Context) {
 		})
 		return
 	}
+	post, notFound := service.QueryPost(postID)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "postID错误",
+		})
+		return
+	}
+	post.Views += 1
+	service.UpdatePost(&post)
 	c.JSON(http.StatusOK, gin.H{
 		"success":  true,
 		"message":  "获取评论成功",
 		"comments": comments,
+		"count":    count,
 	})
 }
 

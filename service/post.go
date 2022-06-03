@@ -26,13 +26,24 @@ func DeletePost(postID uint64) (err error) {
 	err = global.DB.Delete(&post).Error
 	return err
 }
-func GetPosts(off uint64, len uint64, section uint64) (post []model.Post) {
-	global.DB.Order("last_comment_time desc").Where("section=?", section).Limit(len).Offset(off).Find(&post)
-	return post
+func UpdatePost(post *model.Post) (err error) {
+	err = global.DB.Save(post).Error
+	return
 }
-func GetUserPosts(userID uint64, off uint64, len uint64) (post []model.Post) {
-	global.DB.Order("create_time desc").Where("user_id = ?", userID).Limit(len).Offset(off).Find(&post)
-	return post
+func GetPosts(off uint64, len uint64, section uint64, order string) (
+	post []model.Post, count uint64) {
+	global.DB.Order(order).Where("section=?", section).
+		Limit(len).Offset(off).Find(&post).
+		Limit(-1).Offset(-1).Count(&count)
+	return post, count
+}
+func GetUserPosts(
+	userID uint64, off uint64, len uint64) (
+	post []model.Post, count uint64) {
+	global.DB.Order("create_time desc").Where("user_id = ?", userID).
+		Limit(len).Offset(off).Find(&post).
+		Limit(-1).Offset(-1).Count(&count)
+	return post, count
 }
 func CreatePostTag(postTag *model.PostTag) (err error) {
 	if err = global.DB.Create(postTag).Error; err != nil {
@@ -51,7 +62,7 @@ func CreateTag(tag *model.Tag) (err error) {
 	return
 }
 func QueryTag(name string) (tag model.Tag, notFound bool) {
-	notFound = global.DB.First(&tag, name).RecordNotFound()
+	notFound = global.DB.Where("name = ?", name).First(&tag).RecordNotFound()
 	return tag, notFound
 }
 func QueryPostTags(postID uint64) (postTags []model.PostTag, err error) {
@@ -72,9 +83,13 @@ func QueryComment(commentID uint64) (comment model.Comment, notFound bool) {
 	notFound = global.DB.First(&comment, commentID).RecordNotFound()
 	return comment, notFound
 }
-func QueryPostComments(postID uint64) (comments []model.Comment, err error) {
-	err = global.DB.Where("post_id = ?", postID).Find(&comments).Error
-	return comments, err
+func GetPostComments(
+	off uint64, len uint64, postID uint64) (
+	comments []model.Comment, count uint64, err error) {
+	err = global.DB.Order("comment_time").Where("post_id = ?", postID).
+		Limit(len).Offset(off).Find(&comments).
+		Limit(-1).Offset(-1).Count(&count).Error
+	return comments, count, err
 }
 func DeleteComment(commentID uint64) (err error) {
 	var comment model.Comment
@@ -111,7 +126,10 @@ func DeleteCommentLike(commentLike *model.CommentLike) (err error) {
 	global.DB.Delete(&commentLike)
 	return
 }
-func QueryCommentLike(commentID uint64, userID uint64) (commentLike model.CommentLike, notFound bool) {
-	notFound = global.DB.First(&commentLike, "comment_id = ? and user_id = ?", commentID, userID).RecordNotFound()
+func QueryCommentLike(
+	commentID uint64, userID uint64) (
+	commentLike model.CommentLike, notFound bool) {
+	notFound = global.DB.First(&commentLike,
+		"comment_id = ? and user_id = ?", commentID, userID).RecordNotFound()
 	return commentLike, notFound
 }

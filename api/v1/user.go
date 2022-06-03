@@ -196,9 +196,9 @@ func UpdatePassword(c *gin.Context) {
 // @Param        user_id  formData  string  true  "user_id"
 // @Param        username  formData  string  true  "username"
 // @Param        email     formData  string  true      "email"
-// @Param        sex       formData  string  true      "sex"
-// @Param        age       formData  string  true      "age"
-// @Success                          200     {string}  string  "{"status": true, "message": "修改成功"}"
+// @Param        sex       formData  string  false      "sex"
+// @Param        age       formData  string  false      "age"
+// @Success      200     {string}  string  "{"status": true, "message": "修改成功"}"
 // @Router       /user/update_info [post]
 func UpdateInfo(c *gin.Context) {
 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)

@@ -180,7 +180,7 @@ const docTemplate = `{
         },
         "/post/create": {
             "post": {
-                "description": "Create a post",
+                "description": "Create a post --note-- section in [0,3]",
                 "consumes": [
                     "application/json"
                 ],
@@ -227,15 +227,22 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "length",
+                        "description": "length recommended 10",
                         "name": "length",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "section",
+                        "description": "section in [0,3]",
                         "name": "section",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "order in [",
+                        "name": "order",
                         "in": "formData",
                         "required": true
                     }
@@ -277,6 +284,20 @@ const docTemplate = `{
                         "type": "string",
                         "description": "post_id",
                         "name": "post_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "length",
+                        "name": "length",
                         "in": "formData",
                         "required": true
                     }
@@ -484,15 +505,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "sex",
                         "name": "sex",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     },
                     {
                         "type": "string",
                         "description": "age",
                         "name": "age",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     }
                 ],
                 "responses": {
