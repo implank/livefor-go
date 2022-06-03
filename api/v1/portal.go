@@ -116,7 +116,7 @@ func UploadFile(c *gin.Context) {
 	saveName := md5 + "." + suffix
 	savePath := path.Join(saveDir, saveName)
 	c.SaveUploadedFile(header, savePath)
-	url := "/home/ubuntu/gin-backend/media/" + saveName
+	url := "http://43.138.77.133:81/media/" + saveName
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "上传成功",

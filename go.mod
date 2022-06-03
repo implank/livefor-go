@@ -19,7 +19,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
-	github.com/swaggo/swag v1.8.1 // indirect
+	github.com/swaggo/swag v1.8.1
 	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.7 // indirect
