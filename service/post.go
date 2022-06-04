@@ -45,6 +45,39 @@ func GetUserPosts(
 		Limit(-1).Offset(-1).Count(&count)
 	return post, count
 }
+func CreatePostLike(postLike *model.PostLike) (err error) {
+	if err = global.DB.Create(postLike).Error; err != nil {
+		return err
+	}
+	var post model.Post
+	global.DB.First(&post, postLike.PostID)
+	if postLike.LikeOrDislike {
+		post.Like += 1
+	} else {
+		post.Dislike += 1
+	}
+	global.DB.Save(&post)
+	return
+}
+func DeletePostLike(postLike *model.PostLike) (err error) {
+	var post model.Post
+	global.DB.First(&post, postLike.PostID)
+	if postLike.LikeOrDislike {
+		post.Like -= 1
+	} else {
+		post.Dislike -= 1
+	}
+	global.DB.Save(&post)
+	global.DB.Delete(&postLike)
+	return
+}
+func QueryPostLike(
+	postID uint64, userID uint64) (
+	postLike model.PostLike, notFound bool) {
+	notFound = global.DB.First(&postLike,
+		"post_id = ? and user_id = ?", postID, userID).RecordNotFound()
+	return postLike, notFound
+}
 func CreatePostTag(postTag *model.PostTag) (err error) {
 	if err = global.DB.Create(postTag).Error; err != nil {
 		return err

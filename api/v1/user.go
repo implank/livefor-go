@@ -241,6 +241,13 @@ func UpdateInfo(c *gin.Context) {
 	})
 }
 
+// UploadAvatar doc
+// @Description  upload user avatar
+// @Tags         User
+// @Param 			 avatar  formData  file true "avatar"
+// @Param        user_id  formData  string  true  "user_id"
+// @Success      200     {string}  string  "{"status": true, "message": "上传成功", "avatar_url": url}"
+// @Router       /user/upload_avatar [post]
 func UploadAvatar(c *gin.Context) {
 	_, header, _ := c.Request.FormFile("image")
 	userid, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)

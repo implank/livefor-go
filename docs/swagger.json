@@ -325,6 +325,39 @@
                 }
             }
         },
+        "/post/like": {
+            "post": {
+                "description": "Like a post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "parameters": [
+                    {
+                        "description": "LikePostData",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LikePostData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\": true, \"message\": \"点赞成功\", \"postlike\": postlike}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/info": {
             "post": {
                 "description": "ShowUserInfo",
@@ -557,6 +590,38 @@
                     }
                 }
             }
+        },
+        "/user/upload_avatar": {
+            "post": {
+                "description": "upload user avatar",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "avatar",
+                        "name": "avatar",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"上传成功\", \"avatar_url\": url}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -616,6 +681,20 @@
                 },
                 "like_or_dislike": {
                     "type": "boolean"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.LikePostData": {
+            "type": "object",
+            "properties": {
+                "like_or_dislike": {
+                    "type": "boolean"
+                },
+                "post_id": {
+                    "type": "integer"
                 },
                 "user_id": {
                     "type": "integer"

@@ -54,3 +54,4 @@ type CreatePostData struct {
 	Tags    []Tag  `json:"tags"`
 }
 type LikeCommentData CommentLike
+type LikePostData PostLike

@@ -39,6 +39,15 @@ definitions:
       user_id:
         type: integer
     type: object
+  model.LikePostData:
+    properties:
+      like_or_dislike:
+        type: boolean
+      post_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
   model.Tag:
     properties:
       name:
@@ -264,6 +273,27 @@ paths:
             type: string
       tags:
       - Post
+  /post/like:
+    post:
+      consumes:
+      - application/json
+      description: Like a post
+      parameters:
+      - description: LikePostData
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.LikePostData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success": true, "message": "点赞成功", "postlike": postlike}'
+          schema:
+            type: string
+      tags:
+      - Post
   /user/info:
     post:
       description: ShowUserInfo
@@ -414,6 +444,27 @@ paths:
       responses:
         "200":
           description: '{"status": true, "message": "修改成功"}'
+          schema:
+            type: string
+      tags:
+      - User
+  /user/upload_avatar:
+    post:
+      description: upload user avatar
+      parameters:
+      - description: avatar
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "上传成功", "avatar_url": url}'
           schema:
             type: string
       tags:

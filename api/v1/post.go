@@ -84,13 +84,51 @@ func GetPosts(c *gin.Context) {
 			"success": false,
 			"message": "order参数错误",
 		})
+		return
 	}
 	posts, count := service.GetPosts(off, len, section, order)
+	var data [](map[string]interface{})
+	for _, post := range posts {
+		data = append(data, map[string]interface{}{
+			"post":         post,
+			"time_seconds": time.Since(post.CreateTime).Seconds(),
+			"time_minutes": time.Since(post.CreateTime).Minutes(),
+			"time_hours":   time.Since(post.CreateTime).Hours(),
+			"time_days":    time.Since(post.CreateTime).Hours() / 24,
+			"time_weeks":   time.Since(post.CreateTime).Hours() / 24 / 7,
+		})
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "获取文章成功",
-		"posts":   posts,
+		"data":    data,
 		"count":   count,
+	})
+}
+
+// LikePost doc
+// @description Like a post
+// @Tags 				Post
+// @Accept       json
+// @Produce      json
+// @Param        data  body      model.LikePostData  true  "LikePostData"
+// @Success      200   {string}  string                 "{"success": true, "message": "点赞成功", "postlike": postlike}"
+// @Router       /post/like [post]
+func LikePost(c *gin.Context) {
+	var data model.LikePostData
+	if err := c.ShouldBindJSON(&data); err != nil {
+		panic(err)
+	}
+	postLike, notFound := service.QueryPostLike(data.PostID, data.UserID)
+	if !notFound {
+		service.DeletePostLike(&postLike)
+	}
+	postLike = model.PostLike(data)
+	service.CreatePostLike(&postLike)
+	c.JSON(http.StatusOK, gin.H{
+		"success":  true,
+		"message":  "LikeOrDislike成功",
+		"postLike": postLike,
 	})
 }
 
@@ -145,15 +183,11 @@ func LikeComment(c *gin.Context) {
 	if err := c.ShouldBindJSON(&data); err != nil {
 		panic(err)
 	}
-	commentLike, notFoundCommentLike := service.QueryCommentLike(data.CommentID, data.UserID)
-	if !notFoundCommentLike {
+	commentLike, notFound := service.QueryCommentLike(data.CommentID, data.UserID)
+	if !notFound {
 		service.DeleteCommentLike(&commentLike)
 	}
-	commentLike = model.CommentLike{
-		CommentID:     data.CommentID,
-		UserID:        data.UserID,
-		LikeOrDislike: data.LikeOrDislike,
-	}
+	commentLike = model.CommentLike(data)
 	service.CreateCommentLike(&commentLike)
 	c.JSON(http.StatusOK, gin.H{
 		"success":     true,

@@ -10,11 +10,9 @@ import (
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	r.Use(middleware.Cors())
-	Group := r.Group("")
+	Group := r.Group("api/v1")
 	{
-		router.InitUserRouter(Group) // 注册用户路由
-		router.InitPostRouter(Group)
-		router.InitPortalRouter(Group)
+		router.InitRouter(Group)
 	}
 	return r
 }
