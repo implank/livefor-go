@@ -91,13 +91,13 @@ func GetPosts(c *gin.Context) {
 	for _, post := range posts {
 		tags, _ := service.QueryPostTags(post.PostID)
 		data = append(data, map[string]interface{}{
-			"post":         post,
-			"tags":         tags,
-			"time_seconds": time.Since(post.CreateTime).Seconds(),
-			"time_minutes": time.Since(post.CreateTime).Minutes(),
-			"time_hours":   time.Since(post.CreateTime).Hours(),
-			"time_days":    time.Since(post.CreateTime).Hours() / 24,
-			"time_weeks":   time.Since(post.CreateTime).Hours() / 24 / 7,
+			"post":                post,
+			"tags":                tags,
+			"create_time_seconds": time.Since(post.CreateTime).Seconds(),
+			"create_time_minutes": time.Since(post.CreateTime).Minutes(),
+			"create_time_hours":   time.Since(post.CreateTime).Hours(),
+			"create_time_days":    time.Since(post.CreateTime).Hours() / 24,
+			"create_time_weeks":   time.Since(post.CreateTime).Hours() / 24 / 7,
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{
