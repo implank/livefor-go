@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"gin-project/model"
 	"gin-project/service"
-	"gin-project/util"
+	"gin-project/utils"
 	"net/http"
 	"path"
 	"strconv"
@@ -253,7 +253,7 @@ func UploadAvatar(c *gin.Context) {
 	userid, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
 	user, _ := service.QueryUserByUserID(userid)
 	raw := fmt.Sprintf("%d", userid) + time.Now().String() + header.Filename
-	md5 := util.GetMd5(raw)
+	md5 := utils.GetMd5(raw)
 	suffix := strings.Split(header.Filename, ".")[1]
 	saveDir := "./media/avatars"
 	saveName := md5 + "." + suffix

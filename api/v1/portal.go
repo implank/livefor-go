@@ -3,7 +3,7 @@ package v1
 import (
 	"gin-project/model"
 	"gin-project/service"
-	"gin-project/util"
+	"gin-project/utils"
 	"net/http"
 	"path"
 	"strconv"
@@ -111,7 +111,7 @@ func UploadFile(c *gin.Context) {
 	_, header, _ := c.Request.FormFile("image")
 	userid := c.Request.FormValue("user_id")
 	raw := userid + time.Now().String() + header.Filename
-	md5 := util.GetMd5(raw)
+	md5 := utils.GetMd5(raw)
 	suffix := strings.Split(header.Filename, ".")[1]
 	saveDir := "./media/images"
 	saveName := md5 + "." + suffix
