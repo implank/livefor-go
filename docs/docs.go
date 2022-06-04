@@ -106,6 +106,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/portal/upload_file": {
+            "post": {
+                "description": "UploadImage",
+                "tags": [
+                    "Portal"
+                ],
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "图片",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"上传成功\", \"url\": url}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/post/comment/create": {
             "post": {
                 "description": "Create a comment",

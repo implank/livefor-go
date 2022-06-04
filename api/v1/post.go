@@ -89,8 +89,10 @@ func GetPosts(c *gin.Context) {
 	posts, count := service.GetPosts(off, len, section, order)
 	var data [](map[string]interface{})
 	for _, post := range posts {
+		tags, _ := service.QueryPostTags(post.PostID)
 		data = append(data, map[string]interface{}{
 			"post":         post,
+			"tags":         tags,
 			"time_seconds": time.Since(post.CreateTime).Seconds(),
 			"time_minutes": time.Since(post.CreateTime).Minutes(),
 			"time_hours":   time.Since(post.CreateTime).Hours(),

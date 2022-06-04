@@ -106,6 +106,7 @@ func GetBannedUsers(c *gin.Context) {
 // @Param        image  formData   file     true  "图片"
 // @Param				 user_id  formData  string  true      "user_id"
 // @Success      200      {string}  string  "{"status": true, "message": "上传成功", "url": url}"
+// @Router       /portal/upload_file [post]
 func UploadFile(c *gin.Context) {
 	_, header, _ := c.Request.FormFile("image")
 	userid := c.Request.FormValue("user_id")

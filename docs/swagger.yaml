@@ -122,6 +122,27 @@ paths:
             type: string
       tags:
       - Portal
+  /portal/upload_file:
+    post:
+      description: UploadImage
+      parameters:
+      - description: 图片
+        in: formData
+        name: image
+        required: true
+        type: file
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "上传成功", "url": url}'
+          schema:
+            type: string
+      tags:
+      - Portal
   /post/comment/create:
     post:
       description: Create a comment
