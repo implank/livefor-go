@@ -246,42 +246,29 @@ const docTemplate = `{
         "/post/get": {
             "post": {
                 "description": "Get posts with offset and length",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Post"
                 ],
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "offset",
-                        "name": "offset",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "length recommended 10",
-                        "name": "length",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "section in [0,3]",
-                        "name": "section",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "order in [",
-                        "name": "order",
-                        "in": "formData",
-                        "required": true
+                        "description": "22",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetPostsData"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\": true, \"message\": \"获取文章成功\", \"posts\": posts}",
+                        "description": "{\"success\": true, \"message\": \"获取文章成功\", \"data\": data}",
                         "schema": {
                             "type": "string"
                         }
@@ -689,6 +676,29 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.GetPostsData": {
+            "type": "object",
+            "properties": {
+                "length": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "order": {
+                    "type": "string"
+                },
+                "section": {
+                    "type": "integer"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Tag"
+                    }
                 }
             }
         },

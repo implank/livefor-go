@@ -3,6 +3,7 @@ package service
 import (
 	"gin-project/global"
 	"gin-project/model"
+	"strings"
 
 	"github.com/jinzhu/gorm"
 )
@@ -30,11 +31,35 @@ func UpdatePost(post *model.Post) (err error) {
 	err = global.DB.Save(post).Error
 	return
 }
-func GetPosts(off uint64, len uint64, section uint64, order string) (
+func GetPosts(off uint64, leng uint64, section uint64, order string, tags []model.Tag) (
 	post []model.Post, count uint64) {
-	global.DB.Order(order).Where("section=?", section).
-		Limit(len).Offset(off).Find(&post).
-		Limit(-1).Offset(-1).Count(&count)
+	if len(tags) == 0 {
+		global.DB.Order(order).Where("section = ?", section).
+			Limit(leng).Offset(off).Find(&post).
+			Limit(-1).Offset(-1).Count(&count)
+	} else {
+		var str string
+		var id []string
+		for _, tag := range tags {
+			id = append(id, "'"+tag.Name+"'")
+		}
+		str = strings.Join(id, ",")
+		global.DB.
+			Raw(
+				"select *	from posts where exists("+
+					" select * from post_tags "+
+					" where post_tags.post_id=posts.post_id and post_tags.name in ("+str+"))"+
+					" and section = ?", section).
+			Find(&post)
+		count = (uint64)(len(post))
+		global.DB.Order(order).Limit(leng).Offset(off).
+			Raw(
+				"select *	from posts where exists( "+
+					" select * from post_tags "+
+					" where post_tags.post_id=posts.post_id and post_tags.name in ("+str+"))"+
+					" and section = ?", section).
+			Find(&post)
+	}
 	return post, count
 }
 func GetUserPosts(

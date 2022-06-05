@@ -64,21 +64,24 @@ func CreatePost(c *gin.Context) {
 // GetPosts doc
 // @description  Get posts with offset and length
 // @Tags         Post
-// @Param        offset  formData  string  true  "offset"
-// @Param        length  formData  string  true  "length recommended 10"
-// @Param        section  formData  string  true  "section in [0,3]"
-// @Param 			 order  formData  string  true  "order in ["hot","new"]"
-// @Success      200     {string}  string  "{"success": true, "message": "获取文章成功", "posts": posts}"
+// @Accept       json
+// @Produce      json
+// @Param        data  body      model.GetPostsData  true  "22"
+// @Success      200     {string}  string  "{"success": true, "message": "获取文章成功", "data": data}"
 // @Router       /post/get [post]
 func GetPosts(c *gin.Context) {
-	off, _ := strconv.ParseUint(c.Request.FormValue("offset"), 0, 64)
-	len, _ := strconv.ParseUint(c.Request.FormValue("length"), 0, 64)
-	section, _ := strconv.ParseUint(c.Request.FormValue("section"), 0, 64)
-	order := c.Request.FormValue("order")
-	if order == "new" {
+	var d model.GetPostsData
+	if err := c.ShouldBindJSON(&d); err != nil {
+		panic(err)
+	}
+	var order string
+	println(d.Order)
+	if d.Order == "new" {
 		order = "create_time desc"
-	} else if order == "top" {
-		order = "last_comment_time desc"
+	} else if d.Order == "top" {
+		order = "'like' desc"
+	} else if d.Order == "hot" {
+		order = "views desc"
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -86,7 +89,7 @@ func GetPosts(c *gin.Context) {
 		})
 		return
 	}
-	posts, count := service.GetPosts(off, len, section, order)
+	posts, count := service.GetPosts(d.Offset, d.Length, d.Section, order, d.Tags)
 	var data [](map[string]interface{})
 	for _, post := range posts {
 		tags, _ := service.QueryPostTags(post.PostID)

@@ -14,6 +14,21 @@ definitions:
       user_id:
         type: integer
     type: object
+  model.GetPostsData:
+    properties:
+      length:
+        type: integer
+      offset:
+        type: integer
+      order:
+        type: string
+      section:
+        type: integer
+      tags:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
+    type: object
   model.Greenbird:
     properties:
       content:
@@ -213,31 +228,21 @@ paths:
       - Post
   /post/get:
     post:
+      consumes:
+      - application/json
       description: Get posts with offset and length
       parameters:
-      - description: offset
-        in: formData
-        name: offset
+      - description: "22"
+        in: body
+        name: data
         required: true
-        type: string
-      - description: length recommended 10
-        in: formData
-        name: length
-        required: true
-        type: string
-      - description: section in [0,3]
-        in: formData
-        name: section
-        required: true
-        type: string
-      - description: order in [
-        in: formData
-        name: order
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/model.GetPostsData'
+      produces:
+      - application/json
       responses:
         "200":
-          description: '{"success": true, "message": "获取文章成功", "posts": posts}'
+          description: '{"success": true, "message": "获取文章成功", "data": data}'
           schema:
             type: string
       tags:

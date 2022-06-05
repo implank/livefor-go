@@ -55,3 +55,10 @@ type CreatePostData struct {
 }
 type LikeCommentData CommentLike
 type LikePostData PostLike
+type GetPostsData struct {
+	Offset  uint64 `json:"offset"`
+	Length  uint64 `json:"length"`
+	Section uint64 `json:"section"`
+	Order   string `json:"order"`
+	Tags    []Tag  `json:"tags"`
+}
