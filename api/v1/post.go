@@ -124,12 +124,19 @@ func LikePost(c *gin.Context) {
 	postLike, notFound := service.QueryPostLike(data.PostID, data.UserID)
 	if !notFound {
 		service.DeletePostLike(&postLike)
+		if postLike.LikeOrDislike == data.LikeOrDislike {
+			c.JSON(http.StatusOK, gin.H{
+				"success": true,
+				"message": "取消点赞成功",
+			})
+			return
+		}
 	}
 	postLike = model.PostLike(data)
 	service.CreatePostLike(&postLike)
 	c.JSON(http.StatusOK, gin.H{
 		"success":  true,
-		"message":  "LikeOrDislike成功",
+		"message":  "点赞成功",
 		"postLike": postLike,
 	})
 }
@@ -185,15 +192,28 @@ func LikeComment(c *gin.Context) {
 	if err := c.ShouldBindJSON(&data); err != nil {
 		panic(err)
 	}
+	var msg string
+	if data.LikeOrDislike {
+		msg = "点赞"
+	} else {
+		msg = "踩"
+	}
 	commentLike, notFound := service.QueryCommentLike(data.CommentID, data.UserID)
 	if !notFound {
 		service.DeleteCommentLike(&commentLike)
+		if commentLike.LikeOrDislike == data.LikeOrDislike {
+			c.JSON(http.StatusOK, gin.H{
+				"success": true,
+				"message": "取消" + msg + "成功",
+			})
+			return
+		}
 	}
 	commentLike = model.CommentLike(data)
 	service.CreateCommentLike(&commentLike)
 	c.JSON(http.StatusOK, gin.H{
 		"success":     true,
-		"message":     "LikeOrDislike成功",
+		"message":     msg + "成功",
 		"commentLike": commentLike,
 	})
 }
@@ -228,11 +248,22 @@ func GetPostComments(c *gin.Context) {
 	}
 	post.Views += 1
 	service.UpdatePost(&post)
+	var data [](map[string]interface{})
+	for _, comment := range comments {
+		data = append(data, map[string]interface{}{
+			"comment":              comment,
+			"comment_time_seconds": time.Since(comment.CommentTime).Seconds(),
+			"comment_time_minutes": time.Since(comment.CommentTime).Minutes(),
+			"comment_time_hours":   time.Since(comment.CommentTime).Hours(),
+			"comment_time_days":    time.Since(comment.CommentTime).Hours() / 24,
+			"comment_time_weeks":   time.Since(comment.CommentTime).Hours() / 24 / 7,
+		})
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"success":  true,
-		"message":  "获取评论成功",
-		"comments": comments,
-		"count":    count,
+		"success": true,
+		"message": "获取评论成功",
+		"data":    data,
+		"count":   count,
 	})
 }
 
