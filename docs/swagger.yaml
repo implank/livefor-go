@@ -116,6 +116,32 @@ paths:
             type: string
       tags:
       - Portal
+  /portal/get_notifications:
+    post:
+      description: Get user notifications
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: offset
+        in: formData
+        name: offset
+        required: true
+        type: string
+      - description: length
+        in: formData
+        name: length
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "获取成功", "data": notifications}'
+          schema:
+            type: string
+      tags:
+      - Portal
   /portal/save_greenbirds:
     post:
       consumes:
@@ -158,6 +184,27 @@ paths:
             type: string
       tags:
       - Portal
+  /post/add_post_tag:
+    post:
+      description: Add post a tag
+      parameters:
+      - description: post_id
+        in: formData
+        name: post_id
+        required: true
+        type: string
+      - description: name
+        in: formData
+        name: name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success": true, "message": "添加标签成功"}'
+          schema:
+            type: string
+      tags:
+      - Post
   /post/comment/create:
     post:
       description: Create a comment

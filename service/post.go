@@ -9,10 +9,8 @@ import (
 )
 
 func CreatePost(post *model.Post) (err error) {
-	if err = global.DB.Create(post).Error; err != nil {
-		return err
-	}
-	return
+	err = global.DB.Create(post).Error
+	return err
 }
 func QueryPost(postID uint64) (post model.Post, notFound bool) {
 	notFound = global.DB.First(&post, postID).RecordNotFound()
@@ -104,40 +102,41 @@ func QueryPostLike(
 	return postLike, notFound
 }
 func CreatePostTag(postTag *model.PostTag) (err error) {
-	if err = global.DB.Create(postTag).Error; err != nil {
-		return err
-	}
-	return
+	err = global.DB.Create(postTag).Error
+	return err
 }
 func CreateTag(tag *model.Tag, section uint64) (err error) {
-	_, notFound := QueryTag(tag.Name, section)
+	sectionTag, notFound := QuerySectionTag(tag.Name, section)
 	if !notFound {
+		sectionTag.Infers += 1
+		UpdateTag(&sectionTag)
 		return
 	}
-	sectionTag := &model.SectionTag{Name: tag.Name, Section: section}
-	if err = global.DB.Create(sectionTag).Error; err != nil {
-		return err
-	}
-	return
+	sectionTag = model.SectionTag{Name: tag.Name, Section: section}
+	err = global.DB.Create(&sectionTag).Error
+	return err
 }
-func QueryTag(name string, section uint64) (tag model.SectionTag, notFound bool) {
+func UpdateTag(tag *model.SectionTag) {
+	global.DB.Save(tag)
+}
+func QuerySectionTag(name string, section uint64) (tag model.SectionTag, notFound bool) {
 	notFound = global.DB.Where("name = ? and section = ?", name, section).
 		First(&tag).RecordNotFound()
 	return tag, notFound
 }
-func QueryPostTags(postID uint64) (postTags []model.PostTag, err error) {
-	err = global.DB.Where("post_id = ?", postID).Find(&postTags).Error
-	return postTags, err
+func QueryPostTags(postID uint64) (postTags []model.PostTag, notFound bool) {
+	notFound = global.DB.Where("post_id = ?", postID).
+		Find(&postTags).RecordNotFound()
+	return postTags, notFound
 }
-func QuerySectionTags(section uint64) (tags []model.SectionTag) {
-	global.DB.Where("section = ?", section).Find(&tags)
-	return tags
+func QuerySectionTags(section uint64) (tags []model.SectionTag, notFound bool) {
+	notFound = global.DB.Order("Infers desc").Where("section = ?", section).
+		Find(&tags).RecordNotFound()
+	return tags, notFound
 }
 func CreateComment(comment *model.Comment) (err error) {
-	if err = global.DB.Create(comment).Error; err != nil {
-		return err
-	}
-	return
+	err = global.DB.Create(comment).Error
+	return err
 }
 func QueryComment(commentID uint64) (comment model.Comment, notFound bool) {
 	notFound = global.DB.First(&comment, commentID).RecordNotFound()

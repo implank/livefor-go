@@ -30,6 +30,7 @@ func InitMySQL() (err error) {
 		&model.PostTag{},
 		//portal
 		&model.Greenbird{},
+		&model.Notification{},
 	)
 	return global.DB.DB().Ping()
 }

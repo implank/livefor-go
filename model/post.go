@@ -7,7 +7,7 @@ type Post struct {
 	UserID          uint64    `gorm:"not null" json:"user_id"`
 	Username        string    `gorm:"size:255 not null" json:"username"`
 	Title           string    `gorm:"size:255" json:"title"`
-	Content         string    `gorm:"type:text" json:"content"`
+	Content         string    `gorm:"type:longtext" json:"content"`
 	Views           uint64    `gorm:"default:0" json:"views"`
 	Like            uint64    `gorm:"default:0" json:"like"`
 	Dislike         uint64    `gorm:"default:0" json:"dislike"`
@@ -27,7 +27,7 @@ type Comment struct {
 	Username    string    `gorm:"size:255 not null" json:"username"`
 	PostID      uint64    `gorm:"not null" json:"post_id"`
 	CommentTime time.Time `json:"comment_time"`
-	Content     string    `gorm:"size:255 not null" json:"content"`
+	Content     string    `gorm:"type:longtext" json:"content"`
 	OnTop       bool      `gorm:"default:false" json:"on_top"`
 	Like        uint64    `gorm:"default:0" json:"like"`
 	Dislike     uint64    `gorm:"default:0" json:"dislike"`
@@ -40,6 +40,7 @@ type CommentLike struct {
 type SectionTag struct {
 	Name    string `gorm:"primary_key;size:255;auto_increment:false" json:"name"`
 	Section uint64 `gorm:"primary_key;default:0;auto_increment:false" json:"section"`
+	Infers  uint64 `gorm:"default:0" json:"infers"`
 }
 type PostTag struct {
 	PostID uint64 `gorm:"primary_key;auto_increment:false" json:"post_id"`

@@ -25,6 +25,7 @@ func InitRouter(Router *gin.RouterGroup) {
 		PostRouter.POST("/comment/create", v1.CreateComment)
 		PostRouter.POST("/comment/like", v1.LikeComment)
 		PostRouter.POST("/get_post_comments", v1.GetPostComments)
+		PostRouter.POST("/add_post_tag", v1.AddPostTag)
 		PostRouter.POST("/get_post_tags", v1.GetPostTags)
 		PostRouter.GET("/get_section_tags", v1.GetSectionTags)
 	}
@@ -35,5 +36,6 @@ func InitRouter(Router *gin.RouterGroup) {
 		PortalRouter.POST("/ban_user", v1.BanUser)
 		PortalRouter.POST("/get_banned_users", v1.GetBannedUsers)
 		PortalRouter.POST("/upload_file", v1.UploadFile)
+		PortalRouter.POST("/get_notifications", v1.GetNotifications)
 	}
 }

@@ -61,6 +61,45 @@
                 }
             }
         },
+        "/portal/get_notifications": {
+            "post": {
+                "description": "Get user notifications",
+                "tags": [
+                    "Portal"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "length",
+                        "name": "length",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"获取成功\", \"data\": notifications}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/portal/save_greenbirds": {
             "post": {
                 "description": "SaveGreenbird",
@@ -119,6 +158,38 @@
                 "responses": {
                     "200": {
                         "description": "{\"status\": true, \"message\": \"上传成功\", \"url\": url}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/add_post_tag": {
+            "post": {
+                "description": "Add post a tag",
+                "tags": [
+                    "Post"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "post_id",
+                        "name": "post_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\": true, \"message\": \"添加标签成功\"}",
                         "schema": {
                             "type": "string"
                         }

@@ -75,7 +75,6 @@ func GetPosts(c *gin.Context) {
 		panic(err)
 	}
 	var order string
-	println(d.Order)
 	if d.Order == "new" {
 		order = "create_time desc"
 	} else if d.Order == "top" {
@@ -137,6 +136,15 @@ func LikePost(c *gin.Context) {
 	}
 	postLike = model.PostLike(data)
 	service.CreatePostLike(&postLike)
+	user, _ := service.QueryUserByUserID(data.UserID)
+	post, _ := service.QueryPost(data.PostID)
+	notification := model.Notification{
+		Username: "@" + user.Username,
+		PostID:   post.PostID,
+		Msg:      "点赞了你的帖子",
+		Content:  "\"" + post.Title + "\"",
+	}
+	service.CreateNotification(&notification)
 	c.JSON(http.StatusOK, gin.H{
 		"success":  true,
 		"message":  "点赞成功",
@@ -165,10 +173,6 @@ func CreateComment(c *gin.Context) {
 		Content:     content,
 	}
 	err := service.CreateComment(&comment)
-	post, _ := service.QueryPost(postID)
-	post.Comment += 1
-	post.LastCommentTime = comment.CommentTime
-	service.UpdatePost(&post)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -176,6 +180,17 @@ func CreateComment(c *gin.Context) {
 		})
 		return
 	}
+	post, _ := service.QueryPost(postID)
+	post.Comment += 1
+	post.LastCommentTime = comment.CommentTime
+	service.UpdatePost(&post)
+	notification := model.Notification{
+		Username: "@" + user.Username,
+		PostID:   post.PostID,
+		Msg:      "评论了你的帖子",
+		Content:  "\"" + post.Title + "\"",
+	}
+	service.CreateNotification(&notification)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "用户评论成功",
@@ -214,6 +229,18 @@ func LikeComment(c *gin.Context) {
 	}
 	commentLike = model.CommentLike(data)
 	service.CreateCommentLike(&commentLike)
+	if data.LikeOrDislike {
+		user, _ := service.QueryUserByUserID(data.UserID)
+		comment, _ := service.QueryComment(data.CommentID)
+		post, _ := service.QueryPost(comment.PostID)
+		notification := model.Notification{
+			Username: "@" + user.Username,
+			PostID:   comment.PostID,
+			Msg:      "点赞了你的评论",
+			Content:  "\"" + post.Title + "\"",
+		}
+		service.CreateNotification(&notification)
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"success":     true,
 		"message":     msg + "成功",
@@ -270,6 +297,38 @@ func GetPostComments(c *gin.Context) {
 	})
 }
 
+// AddPostTag doc
+// @description  Add post a tag
+// @Tags         Post
+// @Param        post_id  formData  string  true  "post_id"
+// @Param        name  formData  string  true  "name"
+// @Success      200      {string}  string  "{"success": true, "message": "添加标签成功"}"
+// @Router       /post/add_post_tag [post]
+func AddPostTag(c *gin.Context) {
+	post_id, _ := strconv.ParseUint(c.Request.FormValue("post_id"), 0, 64)
+	name := c.Request.FormValue("name")
+	post, notFound := service.QueryPost(post_id)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "postID错误",
+		})
+		return
+	}
+	err := service.CreateTag(&model.Tag{Name: name}, post.Section)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "添加标签失败",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "添加标签成功",
+	})
+}
+
 // GetPostTags doc
 // @description  Get post tags
 // @Tags         Post
@@ -278,14 +337,7 @@ func GetPostComments(c *gin.Context) {
 // @Router       /post/get_post_tags [post]
 func GetPostTags(c *gin.Context) {
 	postID, _ := strconv.ParseUint(c.Request.FormValue("post_id"), 0, 64)
-	postTags, err := service.QueryPostTags(postID)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"message": "获取标签失败",
-		})
-		return
-	}
+	postTags, _ := service.QueryPostTags(postID)
 	c.JSON(http.StatusOK, gin.H{
 		"success":   true,
 		"message":   "获取标签成功",
@@ -301,8 +353,7 @@ func GetPostTags(c *gin.Context) {
 // @Router       /post/get_section_tags [get]
 func GetSectionTags(c *gin.Context) {
 	section, _ := strconv.ParseUint(c.Query("section"), 0, 64)
-	println(section)
-	sectionTags := service.QuerySectionTags(section)
+	sectionTags, _ := service.QuerySectionTags(section)
 	var tags []model.Tag
 	for _, tag := range sectionTags {
 		tags = append(tags, model.Tag{Name: tag.Name})
