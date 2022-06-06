@@ -37,8 +37,9 @@ type CommentLike struct {
 	UserID        uint64 `gorm:"primary_key;auto_increment:false;" json:"user_id"`
 	LikeOrDislike bool   `gorm:"not null" json:"like_or_dislike"`
 }
-type Tag struct {
-	Name string `gorm:"primary_key;size:255" json:"name"`
+type SectionTag struct {
+	Name    string `gorm:"primary_key;size:255;auto_increment:false" json:"name"`
+	Section uint64 `gorm:"primary_key;default:0;auto_increment:false" json:"section"`
 }
 type PostTag struct {
 	PostID uint64 `gorm:"primary_key;auto_increment:false" json:"post_id"`
@@ -46,6 +47,9 @@ type PostTag struct {
 }
 
 //api struct
+type Tag struct {
+	Name string `json:"name"`
+}
 type CreatePostData struct {
 	UserID  uint64 `json:"user_id"`
 	Title   string `json:"title"`

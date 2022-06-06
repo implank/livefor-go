@@ -276,22 +276,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/post/get_all_tags": {
-            "post": {
-                "description": "Get all tags",
-                "tags": [
-                    "Post"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"success\": true, \"message\": \"获取标签成功\", \"tags\":tags}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/post/get_post_comments": {
             "post": {
                 "description": "Get post comments",
@@ -349,6 +333,31 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"success\": true, \"message\": \"获取标签成功\", \"post_tags\":postTags}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/get_section_tags": {
+            "get": {
+                "description": "Get section tags",
+                "tags": [
+                    "Post"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "section",
+                        "name": "section",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\": true, \"message\": \"获取标签成功\", \"tags\":tags}",
                         "schema": {
                             "type": "string"
                         }

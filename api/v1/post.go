@@ -48,7 +48,7 @@ func CreatePost(c *gin.Context) {
 	service.CreatePost(&post)
 	tags := data.Tags
 	for _, tag := range tags {
-		service.CreateTag(&tag)
+		service.CreateTag(&tag, post.Section)
 		postTag := model.PostTag{
 			PostID: post.PostID,
 			Name:   tag.Name,
@@ -293,19 +293,19 @@ func GetPostTags(c *gin.Context) {
 	})
 }
 
-// GetAllTags doc
-// @description  Get all tags
+// GetSectionTags doc
+// @description  Get section tags
 // @Tags         Post
+// @Param				 section  query  string  true  "section"
 // @Success      200  {string}  string  "{"success": true, "message": "获取标签成功", "tags":tags}"
-// @Router       /post/get_all_tags [post]
-func GetAllTags(c *gin.Context) {
-	tags, err := service.QueryAllTags()
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"message": "获取标签失败",
-		})
-		return
+// @Router       /post/get_section_tags [get]
+func GetSectionTags(c *gin.Context) {
+	section, _ := strconv.ParseUint(c.Query("section"), 0, 64)
+	println(section)
+	sectionTags := service.QuerySectionTags(section)
+	var tags []model.Tag
+	for _, tag := range sectionTags {
+		tags = append(tags, model.Tag{Name: tag.Name})
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,

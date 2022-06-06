@@ -21,15 +21,13 @@ func InitMySQL() (err error) {
 	global.DB.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(
 		// user
 		&model.User{},
-
 		// Post
 		&model.Post{},
 		&model.PostLike{},
 		&model.Comment{},
 		&model.CommentLike{},
-		&model.Tag{},
+		&model.SectionTag{},
 		&model.PostTag{},
-
 		//portal
 		&model.Greenbird{},
 	)

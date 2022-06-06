@@ -26,7 +26,7 @@ func InitRouter(Router *gin.RouterGroup) {
 		PostRouter.POST("/comment/like", v1.LikeComment)
 		PostRouter.POST("/get_post_comments", v1.GetPostComments)
 		PostRouter.POST("/get_post_tags", v1.GetPostTags)
-		PostRouter.POST("/get_all_tags", v1.GetAllTags)
+		PostRouter.GET("/get_section_tags", v1.GetSectionTags)
 	}
 	PortalRouter := Router.Group("/portal")
 	{

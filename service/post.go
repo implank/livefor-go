@@ -109,27 +109,29 @@ func CreatePostTag(postTag *model.PostTag) (err error) {
 	}
 	return
 }
-func CreateTag(tag *model.Tag) (err error) {
-	_, notFound := QueryTag(tag.Name)
+func CreateTag(tag *model.Tag, section uint64) (err error) {
+	_, notFound := QueryTag(tag.Name, section)
 	if !notFound {
 		return
 	}
-	if err = global.DB.Create(tag).Error; err != nil {
+	sectionTag := &model.SectionTag{Name: tag.Name, Section: section}
+	if err = global.DB.Create(sectionTag).Error; err != nil {
 		return err
 	}
 	return
 }
-func QueryTag(name string) (tag model.Tag, notFound bool) {
-	notFound = global.DB.Where("name = ?", name).First(&tag).RecordNotFound()
+func QueryTag(name string, section uint64) (tag model.SectionTag, notFound bool) {
+	notFound = global.DB.Where("name = ? and section = ?", name, section).
+		First(&tag).RecordNotFound()
 	return tag, notFound
 }
 func QueryPostTags(postID uint64) (postTags []model.PostTag, err error) {
 	err = global.DB.Where("post_id = ?", postID).Find(&postTags).Error
 	return postTags, err
 }
-func QueryAllTags() (tags []model.Tag, err error) {
-	err = global.DB.Find(&tags).Error
-	return tags, err
+func QuerySectionTags(section uint64) (tags []model.SectionTag) {
+	global.DB.Where("section = ?", section).Find(&tags)
+	return tags
 }
 func CreateComment(comment *model.Comment) (err error) {
 	if err = global.DB.Create(comment).Error; err != nil {

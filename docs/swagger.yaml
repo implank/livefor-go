@@ -247,16 +247,6 @@ paths:
             type: string
       tags:
       - Post
-  /post/get_all_tags:
-    post:
-      description: Get all tags
-      responses:
-        "200":
-          description: '{"success": true, "message": "获取标签成功", "tags":tags}'
-          schema:
-            type: string
-      tags:
-      - Post
   /post/get_post_comments:
     post:
       description: Get post comments
@@ -295,6 +285,22 @@ paths:
       responses:
         "200":
           description: '{"success": true, "message": "获取标签成功", "post_tags":postTags}'
+          schema:
+            type: string
+      tags:
+      - Post
+  /post/get_section_tags:
+    get:
+      description: Get section tags
+      parameters:
+      - description: section
+        in: query
+        name: section
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success": true, "message": "获取标签成功", "tags":tags}'
           schema:
             type: string
       tags:
