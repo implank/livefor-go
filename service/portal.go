@@ -19,13 +19,13 @@ func GetGreenbirds() (greenbirds []model.Greenbird, err error) {
 	err = global.DB.Order("order").Find(&greenbirds).Error
 	return greenbirds, err
 }
-func CreateNotification(*model.Notification) (err error) {
-	err = global.DB.Create(&model.Notification{}).Error
+func CreateNotification(notification *model.Notification) (err error) {
+	err = global.DB.Create(notification).Error
 	return err
 }
 func GetNotification(userID uint64, off uint64, lim uint64) (
 	notifications []model.Notification, count uint64) {
-	global.DB.Order("CreateAt desc").Where("user_id = ?", userID).
+	global.DB.Order("create_at desc").Where("user_id = ?", userID).
 		Limit(lim).Offset(off).Find(&notifications).
 		Limit(-1).Offset(-1).Count(&count)
 	return notifications, count

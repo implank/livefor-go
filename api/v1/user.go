@@ -14,34 +14,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Testtype struct {
-	Name string      `json:"name"`
-	Tags []model.Tag `json:"tags"`
-}
-
-// Test doc
-// @Description  Test
-// @Accept       json
-// @Produce      json
-// @Tags         User
-// @Param        data  body      Testtype  true  "用户名，密码"
-// @Success      200   {string}  string    "{"status": true, "message": "注册成功"}"
-// @Router       /user/test [post]
-func Test(c *gin.Context) {
-	var data Testtype
-	if err := c.ShouldBindJSON(&data); err != nil {
-		panic(err)
-	}
-	println(data.Name)
-	println(data.Tags)
-	println(data.Tags[0].Name)
-	println(data.Tags[1].Name)
-	c.JSON(http.StatusOK, gin.H{
-		"status":  true,
-		"message": data.Name,
-	})
-}
-
 // Register doc
 // @Description  Register
 // @Tags         User

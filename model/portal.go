@@ -8,8 +8,9 @@ type Greenbird struct {
 	Content string `gorm:"type:longtext" json:"content"`
 }
 type Notification struct {
-	Username string `grom:"size:255" json:"username"`
+	UserID   uint64 `json:"user_id"`
 	CreateAt time.Time
+	Username string `grom:"size:255" json:"username"`
 	PostID   uint64 `gorm:"not null" json:"post_id"`
 	Msg      string `gorm:"type:text" json:"msg"`
 	Content  string `gorm:"type:longtext" json:"content"`

@@ -572,39 +572,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/test": {
-            "post": {
-                "description": "Test",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "parameters": [
-                    {
-                        "description": "用户名，密码",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/v1.Testtype"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"status\": true, \"message\": \"注册成功\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/user/update_info": {
             "post": {
                 "description": "UpdateInfo",
@@ -779,6 +746,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/model.Tag"
                     }
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -840,20 +810,6 @@ const docTemplate = `{
             "properties": {
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "v1.Testtype": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Tag"
-                    }
                 }
             }
         }

@@ -92,6 +92,13 @@ func GetPosts(c *gin.Context) {
 	var data [](map[string]interface{})
 	for _, post := range posts {
 		tags, _ := service.QueryPostTags(post.PostID)
+		_, notFound := service.QueryPostLike(post.PostID, d.UserID)
+		var like int
+		if notFound {
+			like = 0
+		} else {
+			like = 1
+		}
 		data = append(data, map[string]interface{}{
 			"post":                post,
 			"tags":                tags,
@@ -100,6 +107,7 @@ func GetPosts(c *gin.Context) {
 			"create_time_hours":   time.Since(post.CreateTime).Hours(),
 			"create_time_days":    time.Since(post.CreateTime).Hours() / 24,
 			"create_time_weeks":   time.Since(post.CreateTime).Hours() / 24 / 7,
+			"like_status":         like,
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -139,6 +147,7 @@ func LikePost(c *gin.Context) {
 	user, _ := service.QueryUserByUserID(data.UserID)
 	post, _ := service.QueryPost(data.PostID)
 	notification := model.Notification{
+		UserID:   post.UserID,
 		Username: "@" + user.Username,
 		PostID:   post.PostID,
 		Msg:      "点赞了你的帖子",
@@ -185,6 +194,7 @@ func CreateComment(c *gin.Context) {
 	post.LastCommentTime = comment.CommentTime
 	service.UpdatePost(&post)
 	notification := model.Notification{
+		UserID:   post.UserID,
 		Username: "@" + user.Username,
 		PostID:   post.PostID,
 		Msg:      "评论了你的帖子",
@@ -234,6 +244,7 @@ func LikeComment(c *gin.Context) {
 		comment, _ := service.QueryComment(data.CommentID)
 		post, _ := service.QueryPost(comment.PostID)
 		notification := model.Notification{
+			UserID:   comment.UserID,
 			Username: "@" + user.Username,
 			PostID:   comment.PostID,
 			Msg:      "点赞了你的评论",
@@ -280,6 +291,15 @@ func GetPostComments(c *gin.Context) {
 	service.UpdatePost(&post)
 	var data [](map[string]interface{})
 	for _, comment := range comments {
+		var like int
+		commentLike, notFound := service.QueryCommentLike(comment.CommentID, comment.UserID)
+		if notFound {
+			like = 0
+		} else if commentLike.LikeOrDislike {
+			like = 1
+		} else {
+			like = -1
+		}
 		data = append(data, map[string]interface{}{
 			"comment":              comment,
 			"comment_time_seconds": time.Since(comment.CommentTime).Seconds(),
@@ -287,6 +307,7 @@ func GetPostComments(c *gin.Context) {
 			"comment_time_hours":   time.Since(comment.CommentTime).Hours(),
 			"comment_time_days":    time.Since(comment.CommentTime).Hours() / 24,
 			"comment_time_weeks":   time.Since(comment.CommentTime).Hours() / 24 / 7,
+			"like_status":          like,
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{
