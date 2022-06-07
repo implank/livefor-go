@@ -221,7 +221,7 @@ func UpdateInfo(c *gin.Context) {
 // @Success      200     {string}  string  "{"status": true, "message": "上传成功", "avatar_url": url}"
 // @Router       /user/upload_avatar [post]
 func UploadAvatar(c *gin.Context) {
-	_, header, _ := c.Request.FormFile("image")
+	_, header, _ := c.Request.FormFile("avatar")
 	userid, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
 	user, _ := service.QueryUserByUserID(userid)
 	raw := fmt.Sprintf("%d", userid) + time.Now().String() + header.Filename
