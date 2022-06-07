@@ -291,6 +291,11 @@ paths:
     post:
       description: Get post comments
       parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
       - description: post_id
         in: formData
         name: post_id

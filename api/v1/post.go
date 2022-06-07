@@ -262,12 +262,14 @@ func LikeComment(c *gin.Context) {
 // GetPostComments doc
 // @description  Get post comments
 // @Tags         Post
+// @Param				 user_id  formData  string  true  "user_id"
 // @Param        post_id  formData  string  true  "post_id"
 // @Param 			 offset formData  string  true  "offset"
 // @Param 			 length formData  string  true  "length"
 // @Success      200      {string}  string  "{"success": true, "message": "获取评论成功", "comments":comments}"
 // @Router       /post/get_post_comments [post]
 func GetPostComments(c *gin.Context) {
+	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
 	postID, _ := strconv.ParseUint(c.Request.FormValue("post_id"), 0, 64)
 	off, _ := strconv.ParseUint(c.Request.FormValue("offset"), 0, 64)
 	len, _ := strconv.ParseUint(c.Request.FormValue("length"), 0, 64)
@@ -292,7 +294,7 @@ func GetPostComments(c *gin.Context) {
 	var data [](map[string]interface{})
 	for _, comment := range comments {
 		var like int
-		commentLike, notFound := service.QueryCommentLike(comment.CommentID, comment.UserID)
+		commentLike, notFound := service.QueryCommentLike(comment.CommentID, userID)
 		if notFound {
 			like = 0
 		} else if commentLike.LikeOrDislike {
