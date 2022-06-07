@@ -231,7 +231,7 @@ func UploadAvatar(c *gin.Context) {
 	saveName := md5 + "." + suffix
 	savePath := path.Join(saveDir, saveName)
 	c.SaveUploadedFile(header, savePath)
-	url := "http://43.138.77.133:81/media/avatars" + saveName
+	url := "http://43.138.77.133:81/media/avatars/" + saveName
 	user.AvatarUrl = url
 	service.UpdateUser(&user)
 	c.JSON(http.StatusOK, gin.H{
