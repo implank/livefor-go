@@ -96,30 +96,12 @@ func GetUserPosts(
 	return post, count
 }
 func CreatePostLike(postLike *model.PostLike) (err error) {
-	if err = global.DB.Create(postLike).Error; err != nil {
-		return err
-	}
-	var post model.Post
-	global.DB.First(&post, postLike.PostID)
-	if postLike.LikeOrDislike {
-		post.Like += 1
-	} else {
-		post.Dislike += 1
-	}
-	global.DB.Save(&post)
-	return
+	err = global.DB.Create(postLike).Error
+	return err
 }
 func DeletePostLike(postLike *model.PostLike) (err error) {
-	var post model.Post
-	global.DB.First(&post, postLike.PostID)
-	if postLike.LikeOrDislike {
-		post.Like -= 1
-	} else {
-		post.Dislike -= 1
-	}
-	global.DB.Save(&post)
-	global.DB.Delete(&postLike)
-	return
+	err = global.DB.Delete(&postLike).Error
+	return err
 }
 func QueryPostLike(
 	postID uint64, userID uint64) (
@@ -169,6 +151,10 @@ func QueryComment(commentID uint64) (comment model.Comment, notFound bool) {
 	notFound = global.DB.First(&comment, commentID).RecordNotFound()
 	return comment, notFound
 }
+func UpdateComment(comment *model.Comment) (err error) {
+	err = global.DB.Save(comment).Error
+	return
+}
 func GetPostComments(
 	off uint64, len uint64, postID uint64) (
 	comments []model.Comment, count uint64, err error) {
@@ -187,30 +173,12 @@ func DeleteComment(commentID uint64) (err error) {
 	return err
 }
 func CreateCommentLike(commentLike *model.CommentLike) (err error) {
-	if err = global.DB.Create(commentLike).Error; err != nil {
-		return err
-	}
-	var comment model.Comment
-	global.DB.First(&comment, commentLike.CommentID)
-	if commentLike.LikeOrDislike {
-		comment.Like += 1
-	} else {
-		comment.Dislike += 1
-	}
-	global.DB.Save(&comment)
-	return
+	err = global.DB.Create(commentLike).Error
+	return err
 }
 func DeleteCommentLike(commentLike *model.CommentLike) (err error) {
-	var comment model.Comment
-	global.DB.First(&comment, commentLike.CommentID)
-	if commentLike.LikeOrDislike {
-		comment.Like -= 1
-	} else {
-		comment.Dislike -= 1
-	}
-	global.DB.Save(&comment)
-	global.DB.Delete(&commentLike)
-	return
+	err = global.DB.Delete(&commentLike).Error
+	return err
 }
 func QueryCommentLike(
 	commentID uint64, userID uint64) (

@@ -11,6 +11,7 @@ type Post struct {
 	Views           uint64    `gorm:"default:0" json:"views"`
 	Like            uint64    `gorm:"default:0" json:"like"`
 	Dislike         uint64    `gorm:"default:0" json:"dislike"`
+	MaxLike         uint64    `gorm:"default:0"`
 	Comment         uint64    `gorm:"default:0" json:"comment"`
 	Section         uint64    `gorm:"default:0" json:"section"`
 	CreateTime      time.Time `gorm:"default:Now()" json:"create_time"`
@@ -31,6 +32,7 @@ type Comment struct {
 	OnTop       bool      `gorm:"default:false" json:"on_top"`
 	Like        uint64    `gorm:"default:0" json:"like"`
 	Dislike     uint64    `gorm:"default:0" json:"dislike"`
+	MaxLike     uint64    `gorm:"default:0"`
 }
 type CommentLike struct {
 	CommentID     uint64 `gorm:"primary_key;auto_increment:false;" json:"comment_id"`

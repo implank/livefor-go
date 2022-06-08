@@ -3,6 +3,7 @@ package v1
 import (
 	"gin-project/model"
 	"gin-project/service"
+	"gin-project/utils"
 	"net/http"
 	"strconv"
 	"time"
@@ -46,6 +47,7 @@ func CreatePost(c *gin.Context) {
 		Section:  data.Section,
 	}
 	service.CreatePost(&post)
+	service.UpdateUserExp(user.UserID, 15)
 	tags := data.Tags
 	for _, tag := range tags {
 		service.CreateTag(&tag, post.Section)
@@ -193,20 +195,21 @@ func LikePost(c *gin.Context) {
 		panic(err)
 	}
 	postLike, notFound := service.QueryPostLike(data.PostID, data.UserID)
-	if !notFound {
-		service.DeletePostLike(&postLike)
-		if postLike.LikeOrDislike == data.LikeOrDislike {
-			c.JSON(http.StatusOK, gin.H{
-				"success": true,
-				"message": "取消点赞成功",
-			})
-			return
-		}
-	}
-	postLike = model.PostLike(data)
-	service.CreatePostLike(&postLike)
 	user, _ := service.QueryUserByUserID(data.UserID)
 	post, _ := service.QueryPost(data.PostID)
+	if !notFound {
+		post.Like -= 1
+		service.DeletePostLike(&postLike)
+		service.UpdatePost(&post)
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": "取消点赞成功",
+		})
+		return
+	}
+	postLike = model.PostLike(data)
+	post.Like += 1
+	post.MaxLike = utils.Max(post.Like, post.MaxLike)
 	notification := model.Notification{
 		UserID:   post.UserID,
 		Username: "@" + user.Username,
@@ -214,7 +217,17 @@ func LikePost(c *gin.Context) {
 		Msg:      "点赞了你的帖子",
 		Content:  "\"" + post.Title + "\"",
 	}
+	if post.MaxLike == 10 || post.MaxLike == 50 || post.MaxLike == 150 {
+		service.UpdateUserExp(post.UserID, 5)
+		post.MaxLike += 1
+	}
+	if post.MaxLike == 500 || post.MaxLike == 1000 {
+		service.UpdateUserExp(post.UserID, 10)
+		post.MaxLike += 1
+	}
 	service.CreateNotification(&notification)
+	service.CreatePostLike(&postLike)
+	service.UpdatePost(&post)
 	c.JSON(http.StatusOK, gin.H{
 		"success":  true,
 		"message":  "点赞成功",
@@ -252,8 +265,15 @@ func CreateComment(c *gin.Context) {
 	}
 	post, _ := service.QueryPost(postID)
 	post.Comment += 1
+	if post.Comment == 10 || post.Comment == 30 || post.Comment == 60 ||
+		post.Comment == 100 || post.Comment == 200 {
+		service.UpdateUserExp(post.UserID, 5)
+	}
 	post.LastCommentTime = comment.CommentTime
 	service.UpdatePost(&post)
+	if len(content) > 15 {
+		service.UpdateUserExp(userID, 5)
+	}
 	notification := model.Notification{
 		UserID:   post.UserID,
 		Username: "@" + user.Username,
@@ -278,19 +298,26 @@ func CreateComment(c *gin.Context) {
 // @Router       /post/comment/like [post]
 func LikeComment(c *gin.Context) {
 	var data model.LikeCommentData
+	var msg string
 	if err := c.ShouldBindJSON(&data); err != nil {
 		panic(err)
 	}
-	var msg string
+	commentLike, notFound := service.QueryCommentLike(data.CommentID, data.UserID)
+	comment, _ := service.QueryComment(data.CommentID)
 	if data.LikeOrDislike {
 		msg = "点赞"
 	} else {
 		msg = "踩"
 	}
-	commentLike, notFound := service.QueryCommentLike(data.CommentID, data.UserID)
 	if !notFound {
+		if commentLike.LikeOrDislike {
+			comment.Like -= 1
+		} else {
+			comment.Dislike -= 1
+		}
 		service.DeleteCommentLike(&commentLike)
 		if commentLike.LikeOrDislike == data.LikeOrDislike {
+			service.UpdateComment(&comment)
 			c.JSON(http.StatusOK, gin.H{
 				"success": true,
 				"message": "取消" + msg + "成功",
@@ -299,10 +326,14 @@ func LikeComment(c *gin.Context) {
 		}
 	}
 	commentLike = model.CommentLike(data)
-	service.CreateCommentLike(&commentLike)
+	if commentLike.LikeOrDislike {
+		comment.Like += 1
+	} else {
+		comment.Dislike += 1
+	}
+	comment.MaxLike = utils.Max(comment.Like, comment.MaxLike)
 	if data.LikeOrDislike {
 		user, _ := service.QueryUserByUserID(data.UserID)
-		comment, _ := service.QueryComment(data.CommentID)
 		post, _ := service.QueryPost(comment.PostID)
 		notification := model.Notification{
 			UserID:   comment.UserID,
@@ -312,7 +343,17 @@ func LikeComment(c *gin.Context) {
 			Content:  "\"" + post.Title + "\"",
 		}
 		service.CreateNotification(&notification)
+		if comment.MaxLike == 10 || comment.MaxLike == 50 || comment.MaxLike == 150 {
+			service.UpdateUserExp(comment.UserID, 5)
+			comment.MaxLike += 1
+		}
+		if comment.MaxLike == 500 || comment.MaxLike == 1000 {
+			service.UpdateUserExp(comment.UserID, 10)
+			comment.MaxLike += 1
+		}
 	}
+	service.CreateCommentLike(&commentLike)
+	service.UpdateComment(&comment)
 	c.JSON(http.StatusOK, gin.H{
 		"success":     true,
 		"message":     msg + "成功",
@@ -351,6 +392,10 @@ func GetPostComments(c *gin.Context) {
 		return
 	}
 	post.Views += 1
+	if post.Views == 60 || post.Views == 200 || post.Views == 500 {
+		service.UpdateUserExp(post.UserID, 5)
+	}
+	service.UpdateUserExp(userID, 5)
 	service.UpdatePost(&post)
 	var data [](map[string]interface{})
 	for _, comment := range comments {
