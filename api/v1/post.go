@@ -93,6 +93,7 @@ func GetPosts(c *gin.Context) {
 	for _, post := range posts {
 		tags, _ := service.QueryPostTags(post.PostID)
 		_, notFound := service.QueryPostLike(post.PostID, d.UserID)
+		user, _ := service.QueryUserByUserID(post.UserID)
 		var like int
 		if notFound {
 			like = 0
@@ -108,6 +109,7 @@ func GetPosts(c *gin.Context) {
 			"create_time_days":    time.Since(post.CreateTime).Hours() / 24,
 			"create_time_weeks":   time.Since(post.CreateTime).Hours() / 24 / 7,
 			"like_status":         like,
+			"user":                user,
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -150,6 +152,7 @@ func SearchPosts(c *gin.Context) {
 	for _, post := range posts {
 		tags, _ := service.QueryPostTags(post.PostID)
 		_, notFound := service.QueryPostLike(post.PostID, d.UserID)
+		user, _ := service.QueryUserByUserID(post.UserID)
 		var like int
 		if notFound {
 			like = 0
@@ -165,6 +168,7 @@ func SearchPosts(c *gin.Context) {
 			"create_time_days":    time.Since(post.CreateTime).Hours() / 24,
 			"create_time_weeks":   time.Since(post.CreateTime).Hours() / 24 / 7,
 			"like_status":         like,
+			"user":                user,
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -352,6 +356,7 @@ func GetPostComments(c *gin.Context) {
 	for _, comment := range comments {
 		var like int
 		commentLike, notFound := service.QueryCommentLike(comment.CommentID, userID)
+		user, _ := service.QueryUserByUserID(comment.UserID)
 		if notFound {
 			like = 0
 		} else if commentLike.LikeOrDislike {
@@ -367,6 +372,7 @@ func GetPostComments(c *gin.Context) {
 			"comment_time_days":    time.Since(comment.CommentTime).Hours() / 24,
 			"comment_time_weeks":   time.Since(comment.CommentTime).Hours() / 24 / 7,
 			"like_status":          like,
+			"user":                 user,
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{
