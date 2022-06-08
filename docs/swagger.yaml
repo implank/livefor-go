@@ -377,6 +377,32 @@ paths:
             type: string
       tags:
       - Post
+  /post/get_user_posts:
+    post:
+      description: Get user posts
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: offset
+        in: formData
+        name: offset
+        required: true
+        type: string
+      - description: length
+        in: formData
+        name: length
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success": true, "message": "获取文章成功", "data": data}'
+          schema:
+            type: string
+      tags:
+      - Post
   /post/like:
     post:
       consumes:
