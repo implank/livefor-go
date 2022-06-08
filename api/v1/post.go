@@ -63,6 +63,18 @@ func CreatePost(c *gin.Context) {
 	})
 }
 
+// func DeletePost(c *gin.Context) {
+// 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+// 	user, notFound := service.QueryUserByUserID(userID)
+// 	if notFound || user.Username != "admin" {
+// 		c.JSON(http.StatusOK, gin.H{
+// 			"success": false,
+// 			"message": "用户不存在",
+// 		})
+// 		return
+// 	}
+// }
+
 // GetPosts doc
 // @description  Get posts with offset and length
 // @Tags         Post
@@ -176,6 +188,35 @@ func SearchPosts(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "获取文章成功",
+		"data":    data,
+		"count":   count,
+	})
+}
+
+// GetUserPosts doc
+// @description	Get user posts
+// @Tags         Post
+// @Param        user_id  formData  string  true  "user_id"
+// @Param        offset  formData  string  true  "offset"
+// @Param        length  formData  string  true  "length"
+// @Success      200     {string}  string  "{"success": true, "message": "获取文章成功", "data": data}"
+// @Router       /post/get_user_posts [post]
+func GetUserPosts(c *gin.Context) {
+	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	off, _ := strconv.ParseUint(c.Request.FormValue("offset"), 0, 64)
+	len, _ := strconv.ParseUint(c.Request.FormValue("length"), 0, 64)
+	posts, count := service.GetUserPosts(userID, off, len)
+	var data [](map[string]interface{})
+	for _, post := range posts {
+		tags, _ := service.QueryPostTags(post.PostID)
+		data = append(data, map[string]interface{}{
+			"post": post,
+			"tags": tags,
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "获取用户文章成功",
 		"data":    data,
 		"count":   count,
 	})

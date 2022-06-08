@@ -22,6 +22,7 @@ func InitRouter(Router *gin.RouterGroup) {
 		PostRouter.POST("/create", v1.CreatePost)
 		PostRouter.POST("/get", v1.GetPosts)
 		PostRouter.POST("/search", v1.SearchPosts)
+		PostRouter.POST("/get_user_posts", v1.GetUserPosts)
 		PostRouter.POST("/like", v1.LikePost)
 		PostRouter.POST("/comment/create", v1.CreateComment)
 		PostRouter.POST("/comment/like", v1.LikeComment)
