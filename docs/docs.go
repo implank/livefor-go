@@ -73,6 +73,22 @@ const docTemplate = `{
                 }
             }
         },
+        "/portal/get_hot_posts": {
+            "post": {
+                "description": "get posts which get the most highest views",
+                "tags": [
+                    "Portal"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"获取成功\", \"data\": posts}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/portal/get_notifications": {
             "post": {
                 "description": "Get user notifications",

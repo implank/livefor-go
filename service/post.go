@@ -60,6 +60,10 @@ func GetPosts(off uint64, leng uint64, section uint64, order string, tags []mode
 	}
 	return post, count
 }
+func GetHotPosts() (posts []model.Post) {
+	global.DB.Order("views desc").Limit(4).Find(&posts)
+	return posts
+}
 func GetUserPosts(
 	userID uint64, off uint64, len uint64) (
 	post []model.Post, count uint64) {

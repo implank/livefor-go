@@ -36,5 +36,6 @@ func InitRouter(Router *gin.RouterGroup) {
 		PortalRouter.POST("/get_banned_users", v1.GetBannedUsers)
 		PortalRouter.POST("/upload_file", v1.UploadFile)
 		PortalRouter.POST("/get_notifications", v1.GetNotifications)
+		PortalRouter.POST("/get_hot_posts", v1.GetHotPosts)
 	}
 }

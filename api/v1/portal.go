@@ -144,3 +144,17 @@ func GetNotifications(c *gin.Context) {
 		"data":    notifications,
 	})
 }
+
+// GetHotPosts doc
+// @Description get posts which get the most highest views
+// @Tags Portal
+// @Success 200 {string} string "{"status": true, "message": "获取成功", "data": posts}"
+// @Router /portal/get_hot_posts [post]
+func GetHotPosts(c *gin.Context) {
+	posts := service.GetHotPosts()
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "获取成功",
+		"data":    posts,
+	})
+}
