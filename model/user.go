@@ -8,8 +8,8 @@ type User struct {
 	//UserInfo  string    `gorm:"type:text" json:"user_info"`
 	Password      string    `gorm:"size:255;not null" json:"password"`
 	Email         string    `gorm:"size:255;not null" json:"email"`
-	UserLevel     uint64    `gorm:"not null;default:1" json:"user_level"`
-	Exp           uint64    `gorm:"not null;default:0" json:"exp"`
+	UserLevel     int       `gorm:"not null;default:1" json:"user_level"`
+	Exp           int       `gorm:"not null;default:0" json:"exp"`
 	Ban           bool      `gorm:"default:false" json:"ban"`
 	Bandate       time.Time `gorm:"default:Now()" json:"bandate"`
 	Sex           string    `gorm:"size:255;default:'未知'" json:"sex"`

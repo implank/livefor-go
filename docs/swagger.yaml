@@ -487,6 +487,27 @@ paths:
             type: string
       tags:
       - User
+  /user/update_exp:
+    post:
+      description: update user exp
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: exp
+        in: formData
+        name: exp
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "修改成功"}'
+          schema:
+            type: string
+      tags:
+      - User
   /user/update_info:
     post:
       description: UpdateInfo

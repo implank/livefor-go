@@ -250,3 +250,20 @@ func UploadAvatar(c *gin.Context) {
 		"avatar_url": url,
 	})
 }
+
+// UpdateUserExp doc
+// @description	update user exp
+// @tags			User
+// @Param			user_id		formData	string	true	"user_id"
+// @Param			exp			formData	string	true	"exp"
+// @Success		200		{string}	string	"{"status": true, "message": "修改成功"}"
+// @Router			/user/update_exp [post]
+func UpdateExp(c *gin.Context) {
+	user_id, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	exp, _ := strconv.Atoi(c.Request.FormValue("exp"))
+	service.UpdateUserExp(user_id, exp)
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "更新成功",
+	})
+}

@@ -65,7 +65,7 @@ func SearchPosts(
 	fliters []string, section uint64, off uint64, lim uint64, order string) (
 	posts []model.Post, count uint64) {
 	var tmp []model.Post
-	if section != 1926 {
+	if section == 1926 {
 		global.DB.Order(order).Find(&tmp)
 	} else {
 		global.DB.Order(order).Where("section = ?", section).Find(&tmp)

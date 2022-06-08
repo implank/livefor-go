@@ -628,6 +628,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/update_exp": {
+            "post": {
+                "description": "update user exp",
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "exp",
+                        "name": "exp",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/update_info": {
             "post": {
                 "description": "UpdateInfo",
