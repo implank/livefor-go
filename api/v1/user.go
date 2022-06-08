@@ -222,8 +222,15 @@ func UpdateInfo(c *gin.Context) {
 // @Router       /user/upload_avatar [post]
 func UploadAvatar(c *gin.Context) {
 	_, header, _ := c.Request.FormFile("avatar")
-	userid, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
-	user, _ := service.QueryUserByUserID(userid)
+	userid, _ := strconv.ParseUint(c.Query("user_id"), 0, 64)
+	user, notFound := service.QueryUserByUserID(userid)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  false,
+			"message": "用户不存在",
+		})
+		return
+	}
 	raw := fmt.Sprintf("%d", userid) + time.Now().String() + header.Filename
 	md5 := utils.GetMd5(raw)
 	suffix := strings.Split(header.Filename, ".")[1]
