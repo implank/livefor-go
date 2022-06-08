@@ -65,6 +65,23 @@ definitions:
       user_id:
         type: integer
     type: object
+  model.SearchPostsData:
+    properties:
+      fliters:
+        items:
+          type: string
+        type: array
+      length:
+        type: integer
+      offset:
+        type: integer
+      order:
+        type: string
+      section:
+        type: integer
+      user_id:
+        type: integer
+    type: object
   model.Tag:
     properties:
       name:
@@ -377,6 +394,27 @@ paths:
       responses:
         "200":
           description: '{"success": true, "message": "点赞成功", "postlike": postlike}'
+          schema:
+            type: string
+      tags:
+      - Post
+  /post/search:
+    post:
+      consumes:
+      - application/json
+      description: Search post
+      parameters:
+      - description: "22"
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.SearchPostsData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success": true, "message": "搜索成功", "data": data}'
           schema:
             type: string
       tags:

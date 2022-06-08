@@ -68,3 +68,11 @@ type GetPostsData struct {
 	Order   string `json:"order"`
 	Tags    []Tag  `json:"tags"`
 }
+type SearchPostsData struct {
+	UserID  uint64   `json:"user_id"`
+	Offset  uint64   `json:"offset"`
+	Length  uint64   `json:"length"`
+	Section uint64   `json:"section"`
+	Order   string   `json:"order"`
+	Fliters []string `json:"fliters"`
+}

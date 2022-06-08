@@ -5,6 +5,7 @@ import (
 	"gin-project/model"
 	"gin-project/service"
 	"gin-project/utils"
+	"math/rand"
 	"net/http"
 	"path"
 	"strconv"
@@ -43,10 +44,12 @@ func Register(c *gin.Context) {
 			Password: password1,
 			Email:    email,
 		}
+		user.ConfirmNumber = rand.New(rand.NewSource(time.Now().UnixNano())).Int() % 1000000
 		service.CreateUser(&user)
+		utils.SendRegisterEmail(email, user.ConfirmNumber)
 		c.JSON(http.StatusOK, gin.H{
 			"status":  true,
-			"message": "注册成功",
+			"message": "注册成功，请前往邮箱激活账号",
 		})
 		return
 	}

@@ -492,6 +492,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/post/search": {
+            "post": {
+                "description": "Search post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Post"
+                ],
+                "parameters": [
+                    {
+                        "description": "22",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SearchPostsData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\": true, \"message\": \"搜索成功\", \"data\": data}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/info": {
             "post": {
                 "description": "ShowUserInfo",
@@ -821,6 +854,32 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "post_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.SearchPostsData": {
+            "type": "object",
+            "properties": {
+                "fliters": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "length": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "order": {
+                    "type": "string"
+                },
+                "section": {
                     "type": "integer"
                 },
                 "user_id": {

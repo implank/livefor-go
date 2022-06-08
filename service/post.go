@@ -3,6 +3,7 @@ package service
 import (
 	"gin-project/global"
 	"gin-project/model"
+	"gin-project/utils"
 	"strings"
 
 	"github.com/jinzhu/gorm"
@@ -59,6 +60,28 @@ func GetPosts(off uint64, leng uint64, section uint64, order string, tags []mode
 			Find(&post)
 	}
 	return post, count
+}
+func SearchPosts(
+	fliters []string, section uint64, off uint64, lim uint64, order string) (
+	posts []model.Post, count uint64) {
+	var tmp []model.Post
+	if section != 1926 {
+		global.DB.Order(order).Find(&tmp)
+	} else {
+		global.DB.Order(order).Where("section = ?", section).Find(&tmp)
+	}
+	for _, post := range tmp {
+		for _, fliter := range fliters {
+			if strings.Contains(post.Title, fliter) ||
+				strings.Contains(post.Content, fliter) {
+				posts = append(posts, post)
+			}
+		}
+	}
+	count = (uint64)(len(posts))
+	lim = utils.Min(count-off, lim)
+	posts = posts[off : off+lim]
+	return posts, count
 }
 func GetHotPosts() (posts []model.Post) {
 	global.DB.Order("views desc").Limit(4).Find(&posts)

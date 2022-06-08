@@ -118,6 +118,63 @@ func GetPosts(c *gin.Context) {
 	})
 }
 
+// SearchPost doc
+// @description	Search post
+// @Tags         Post
+// @Accept       json
+// @Produce      json
+// @Param        data  body      model.SearchPostsData  true  "22"
+// @Success      200     {string}  string  "{"success": true, "message": "搜索成功", "data": data}"
+// @Router       /post/search [post]
+func SearchPosts(c *gin.Context) {
+	var d model.SearchPostsData
+	if err := c.ShouldBindJSON(&d); err != nil {
+		panic(err)
+	}
+	var order string
+	if d.Order == "new" {
+		order = "create_time desc"
+	} else if d.Order == "top" {
+		order = "'like' desc"
+	} else if d.Order == "hot" {
+		order = "views desc"
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "order参数错误",
+		})
+		return
+	}
+	posts, count := service.SearchPosts(d.Fliters, d.Section, d.Offset, d.Length, order)
+	var data [](map[string]interface{})
+	for _, post := range posts {
+		tags, _ := service.QueryPostTags(post.PostID)
+		_, notFound := service.QueryPostLike(post.PostID, d.UserID)
+		var like int
+		if notFound {
+			like = 0
+		} else {
+			like = 1
+		}
+		data = append(data, map[string]interface{}{
+			"post":                post,
+			"tags":                tags,
+			"create_time_seconds": time.Since(post.CreateTime).Seconds(),
+			"create_time_minutes": time.Since(post.CreateTime).Minutes(),
+			"create_time_hours":   time.Since(post.CreateTime).Hours(),
+			"create_time_days":    time.Since(post.CreateTime).Hours() / 24,
+			"create_time_weeks":   time.Since(post.CreateTime).Hours() / 24 / 7,
+			"like_status":         like,
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "获取文章成功",
+		"data":    data,
+		"count":   count,
+	})
+}
+
 // LikePost doc
 // @description Like a post
 // @Tags 				Post
