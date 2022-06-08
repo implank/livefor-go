@@ -222,7 +222,7 @@ func UpdateInfo(c *gin.Context) {
 // @Router       /user/upload_avatar [post]
 func UploadAvatar(c *gin.Context) {
 	_, header, _ := c.Request.FormFile("avatar")
-	userid, _ := strconv.ParseUint(c.Query("user_id"), 0, 64)
+	userid, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
 	user, notFound := service.QueryUserByUserID(userid)
 	if notFound {
 		c.JSON(http.StatusOK, gin.H{
