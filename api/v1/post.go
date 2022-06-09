@@ -47,7 +47,17 @@ func CreatePost(c *gin.Context) {
 		Section:  data.Section,
 	}
 	service.CreatePost(&post)
-	service.UpdateUserExp(user.UserID, 15)
+	count := service.GetSysMessageCount(data.UserID, 0, time.Now().Format(utils.DAYFORMAT))
+	if count < 2 {
+		sm := model.SysMessage{
+			UserID: data.UserID,
+			Date:   time.Now().Format(utils.DAYFORMAT),
+			Type:   0,
+			Times:  count + 1,
+		}
+		service.CreateSysMessage(&sm)
+		service.UpdateUserExp(user.UserID, 15)
+	}
 	tags := data.Tags
 	for _, tag := range tags {
 		service.CreateTag(&tag, post.Section)
@@ -131,6 +141,31 @@ func GetPosts(c *gin.Context) {
 		"message": "获取文章成功",
 		"data":    data,
 		"count":   count,
+	})
+}
+
+// ReadPost doc
+// @description  read post and add user exp
+// @Tags         Post
+// @Param        user_id	formData  string true "user_id"
+// @Success      200   {string}  string                "{"success": true, "message": "获取文章成功"}"
+// @Router       /post/read [post]
+func ReadPost(c *gin.Context) {
+	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	count := service.GetSysMessageCount(userID, 2, time.Now().Format(utils.DAYFORMAT))
+	if count < 4 {
+		sm := model.SysMessage{
+			UserID: userID,
+			Date:   time.Now().Format(utils.DAYFORMAT),
+			Type:   2,
+			Times:  count + 1,
+		}
+		service.CreateSysMessage(&sm)
+		service.UpdateUserExp(userID, 5)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "无",
 	})
 }
 
@@ -255,8 +290,8 @@ func LikePost(c *gin.Context) {
 		UserID:   post.UserID,
 		Username: "@" + user.Username,
 		PostID:   post.PostID,
-		Msg:      "点赞了你的帖子",
-		Content:  "\"" + post.Title + "\"",
+		Title:    "\"" + post.Title + "\"",
+		Type:     0,
 	}
 	if post.MaxLike == 10 || post.MaxLike == 50 || post.MaxLike == 150 {
 		service.UpdateUserExp(post.UserID, 5)
@@ -313,14 +348,24 @@ func CreateComment(c *gin.Context) {
 	post.LastCommentTime = comment.CommentTime
 	service.UpdatePost(&post)
 	if len(content) > 15 {
-		service.UpdateUserExp(userID, 5)
+		count := service.GetSysMessageCount(userID, 1, time.Now().Format(utils.DAYFORMAT))
+		if count < 6 {
+			sm := model.SysMessage{
+				UserID: userID,
+				Date:   time.Now().Format(utils.DAYFORMAT),
+				Type:   1,
+				Times:  count + 1,
+			}
+			service.UpdateUserExp(userID, 5)
+			service.CreateSysMessage(&sm)
+		}
 	}
 	notification := model.Notification{
 		UserID:   post.UserID,
 		Username: "@" + user.Username,
 		PostID:   post.PostID,
-		Msg:      "评论了你的帖子",
-		Content:  "\"" + post.Title + "\"",
+		Title:    "\"" + post.Title + "\"",
+		Type:     2,
 	}
 	service.CreateNotification(&notification)
 	c.JSON(http.StatusOK, gin.H{
@@ -380,8 +425,8 @@ func LikeComment(c *gin.Context) {
 			UserID:   comment.UserID,
 			Username: "@" + user.Username,
 			PostID:   comment.PostID,
-			Msg:      "点赞了你的评论",
-			Content:  "\"" + post.Title + "\"",
+			Title:    "\"" + post.Title + "\"",
+			Type:     1,
 		}
 		service.CreateNotification(&notification)
 		if comment.MaxLike == 10 || comment.MaxLike == 50 || comment.MaxLike == 150 {

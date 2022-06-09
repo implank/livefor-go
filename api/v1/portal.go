@@ -137,11 +137,38 @@ func GetNotifications(c *gin.Context) {
 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
 	off, _ := strconv.ParseUint(c.Request.FormValue("offset"), 0, 64)
 	len, _ := strconv.ParseUint(c.Request.FormValue("length"), 0, 64)
-	notifications, _ := service.GetNotification(userID, off, len)
+	t, _ := strconv.ParseUint(c.Request.FormValue("type"), 0, 64)
+	var notifications []model.Notification
+	if t == 0 {
+		notifications, _ = service.GetLikeNotification(userID, off, len)
+	} else {
+		notifications, _ = service.GetCommentNotification(userID, off, len)
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "获取成功",
 		"data":    notifications,
+	})
+}
+
+// GetUserMessage doc
+// @description  Get user system message
+// @Tags         Portal
+// @Param        user_id  formData     string     true  "user_id"
+// @Param 			 offset 	formData  string  true  "offset"
+// @Param 			 length 	formData  string  true  "length"
+// @Success      200      {string}  string  "{"status": true, "message": "获取成功", "data": SysMessages}"
+// @Router       /portal/get_user_message [post]
+func GetSysMessage(c *gin.Context) {
+	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	off, _ := strconv.ParseUint(c.Request.FormValue("offset"), 0, 64)
+	len, _ := strconv.ParseUint(c.Request.FormValue("length"), 0, 64)
+	SysMessages, count := service.GetSysMessages(userID, off, len)
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "获取成功",
+		"data":    SysMessages,
+		"count":   count,
 	})
 }
 

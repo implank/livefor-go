@@ -162,6 +162,32 @@ paths:
             type: string
       tags:
       - Portal
+  /portal/get_user_message:
+    post:
+      description: Get user system message
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: offset
+        in: formData
+        name: offset
+        required: true
+        type: string
+      - description: length
+        in: formData
+        name: length
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "获取成功", "data": SysMessages}'
+          schema:
+            type: string
+      tags:
+      - Portal
   /portal/save_greenbirds:
     post:
       consumes:
@@ -420,6 +446,22 @@ paths:
       responses:
         "200":
           description: '{"success": true, "message": "点赞成功", "postlike": postlike}'
+          schema:
+            type: string
+      tags:
+      - Post
+  /post/read:
+    post:
+      description: read post and add user exp
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success": true, "message": "获取文章成功"}'
           schema:
             type: string
       tags:

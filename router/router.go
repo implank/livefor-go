@@ -21,6 +21,7 @@ func InitRouter(Router *gin.RouterGroup) {
 	{
 		PostRouter.POST("/create", v1.CreatePost)
 		PostRouter.POST("/get", v1.GetPosts)
+		PostRouter.POST("/read", v1.ReadPost)
 		PostRouter.POST("/search", v1.SearchPosts)
 		PostRouter.POST("/get_user_posts", v1.GetUserPosts)
 		PostRouter.POST("/like", v1.LikePost)
@@ -40,5 +41,6 @@ func InitRouter(Router *gin.RouterGroup) {
 		PortalRouter.POST("/upload_file", v1.UploadFile)
 		PortalRouter.POST("/get_notifications", v1.GetNotifications)
 		PortalRouter.POST("/get_hot_posts", v1.GetHotPosts)
+		PortalRouter.POST("/get_user_message", v1.GetSysMessage)
 	}
 }

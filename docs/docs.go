@@ -128,6 +128,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/portal/get_user_message": {
+            "post": {
+                "description": "Get user system message",
+                "tags": [
+                    "Portal"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "length",
+                        "name": "length",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"获取成功\", \"data\": SysMessages}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/portal/save_greenbirds": {
             "post": {
                 "description": "SaveGreenbird",
@@ -524,6 +563,31 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"success\": true, \"message\": \"点赞成功\", \"postlike\": postlike}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/read": {
+            "post": {
+                "description": "read post and add user exp",
+                "tags": [
+                    "Post"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\": true, \"message\": \"获取文章成功\"}",
                         "schema": {
                             "type": "string"
                         }

@@ -31,6 +31,7 @@ func InitMySQL() (err error) {
 		//portal
 		&model.Greenbird{},
 		&model.Notification{},
+		&model.SysMessage{},
 	)
 	return global.DB.DB().Ping()
 }

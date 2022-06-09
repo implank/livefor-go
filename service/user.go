@@ -3,6 +3,7 @@ package service
 import (
 	"gin-project/global"
 	"gin-project/model"
+	"gin-project/utils"
 	"time"
 )
 
@@ -44,6 +45,13 @@ func UpdateUserExp(userID uint64, exp int) {
 			if user.Exp >= EXPGAP[i] {
 				user.UserLevel = i + 1
 				user.Exp -= EXPGAP[i]
+				sm := model.SysMessage{
+					UserID: userID,
+					Date:   time.Now().Format(utils.DAYFORMAT),
+					Type:   3,
+					Times:  i + 1,
+				}
+				CreateSysMessage(&sm)
 			} else {
 				break
 			}

@@ -23,10 +23,34 @@ func CreateNotification(notification *model.Notification) (err error) {
 	err = global.DB.Create(notification).Error
 	return err
 }
-func GetNotification(userID uint64, off uint64, lim uint64) (
+func GetLikeNotification(userID uint64, off uint64, lim uint64) (
 	notifications []model.Notification, count uint64) {
-	global.DB.Order("create_at desc").Where("user_id = ?", userID).
+	global.DB.Order("create_at desc").Where("user_id = ? and type < 2", userID).
 		Limit(lim).Offset(off).Find(&notifications).
 		Limit(-1).Offset(-1).Count(&count)
 	return notifications, count
+}
+func GetCommentNotification(userID uint64, off uint64, lim uint64) (
+	notifications []model.Notification, count uint64) {
+	global.DB.Order("create_at desc").Where("user_id = ? and type = 2", userID).
+		Limit(lim).Offset(off).Find(&notifications).
+		Limit(-1).Offset(-1).Count(&count)
+	return notifications, count
+}
+func CreateSysMessage(sm *model.SysMessage) (err error) {
+	err = global.DB.Create(sm).Error
+	return err
+}
+func GetSysMessageCount(userID uint64, t int, date string) (
+	count int) {
+	global.DB.Model(&model.SysMessage{}).Where("user_id = ? and type = ?", userID, t).
+		Where("date = ?", date).Count(&count)
+	return count
+}
+func GetSysMessages(userID uint64, off uint64, lim uint64) (
+	sysMessages []model.SysMessage, count uint64) {
+	global.DB.Order("create_at desc").Where("user_id = ?", userID).
+		Limit(lim).Offset(off).Find(&sysMessages).
+		Limit(-1).Offset(-1).Count(&count)
+	return sysMessages, count
 }
