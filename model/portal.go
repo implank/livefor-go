@@ -21,7 +21,7 @@ type SysMessage struct {
 	CreateTime time.Time `gorm:"default:Now()" json:"create_time"`
 	Date       string    `json:"date"`
 	Type       int       `json:"type"`
-	Times      int       `gorm:"default:0" json:"got_exp"`
+	Times      int       `gorm:"default:0" json:"times"`
 }
 
 //LikePost 0
