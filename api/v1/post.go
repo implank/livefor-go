@@ -73,17 +73,20 @@ func CreatePost(c *gin.Context) {
 	})
 }
 
-// func DeletePost(c *gin.Context) {
-// 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
-// 	user, notFound := service.QueryUserByUserID(userID)
-// 	if notFound || user.Username != "admin" {
-// 		c.JSON(http.StatusOK, gin.H{
-// 			"success": false,
-// 			"message": "用户不存在",
-// 		})
-// 		return
-// 	}
-// }
+func DeletePost(c *gin.Context) {
+	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	user, notFound := service.QueryUserByUserID(userID)
+	if notFound || user.Username != "admin" {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "用户不存在/不是管理员",
+		})
+		return
+	}
+	postID, _ := strconv.ParseUint(c.Request.FormValue("post_id"), 0, 64)
+	service.DeletePost(postID)
+
+}
 
 // GetPosts doc
 // @description  Get posts with offset and length

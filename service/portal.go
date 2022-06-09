@@ -25,14 +25,15 @@ func CreateNotification(notification *model.Notification) (err error) {
 }
 func GetLikeNotification(userID uint64, off uint64, lim uint64) (
 	notifications []model.Notification, count uint64) {
-	global.DB.Order("create_at desc").Where("user_id = ? and type < 2", userID).
+	global.DB.Order("create_time desc").Where("user_id = ? and type < 2", userID).
 		Limit(lim).Offset(off).Find(&notifications).
 		Limit(-1).Offset(-1).Count(&count)
+	println(userID, off, lim, count)
 	return notifications, count
 }
 func GetCommentNotification(userID uint64, off uint64, lim uint64) (
 	notifications []model.Notification, count uint64) {
-	global.DB.Order("create_at desc").Where("user_id = ? and type = 2", userID).
+	global.DB.Order("create_time desc").Where("user_id = ? and type = 2", userID).
 		Limit(lim).Offset(off).Find(&notifications).
 		Limit(-1).Offset(-1).Count(&count)
 	return notifications, count

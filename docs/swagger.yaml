@@ -171,6 +171,11 @@ paths:
         name: length
         required: true
         type: string
+      - description: type
+        in: formData
+        name: type
+        required: true
+        type: string
       responses:
         "200":
           description: '{"status": true, "message": "获取成功", "data": notifications}'

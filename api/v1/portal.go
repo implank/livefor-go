@@ -131,6 +131,7 @@ func UploadFile(c *gin.Context) {
 // @Param        user_id  formData     string     true  "user_id"
 // @Param 			 offset 	formData  string  true  "offset"
 // @Param 			 length 	formData  string  true  "length"
+// @Param 			 type 	formData  string  true  "type"
 // @Success      200      {string}  string  "{"status": true, "message": "获取成功", "data": notifications}"
 // @Router       /portal/get_notifications [post]
 func GetNotifications(c *gin.Context) {
@@ -139,15 +140,17 @@ func GetNotifications(c *gin.Context) {
 	len, _ := strconv.ParseUint(c.Request.FormValue("length"), 0, 64)
 	t, _ := strconv.ParseUint(c.Request.FormValue("type"), 0, 64)
 	var notifications []model.Notification
+	var count uint64
 	if t == 0 {
-		notifications, _ = service.GetLikeNotification(userID, off, len)
+		notifications, count = service.GetLikeNotification(userID, off, len)
 	} else {
-		notifications, _ = service.GetCommentNotification(userID, off, len)
+		notifications, count = service.GetCommentNotification(userID, off, len)
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "获取成功",
 		"data":    notifications,
+		"count":   count,
 	})
 }
 

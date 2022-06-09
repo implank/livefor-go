@@ -141,6 +141,13 @@ const docTemplate = `{
                         "name": "length",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "type",
+                        "name": "type",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
