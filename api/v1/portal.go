@@ -235,6 +235,7 @@ func CheckNoob(c *gin.Context) {
 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
 	user, _ := service.QueryUserByUserID(userID)
 	user.Isnoob = false
+	service.UpdateUser(&user)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "",
