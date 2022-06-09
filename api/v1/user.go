@@ -90,6 +90,16 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
+	count := service.GetSysMessageCount(user.UserID, 7, "")
+	if count < 1 {
+		sm := model.SysMessage{
+			UserID: user.UserID,
+			Date:   time.Now().Format(utils.DAYFORMAT),
+			Type:   7,
+			Times:  1,
+		}
+		service.CreateSysMessage(&sm)
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  true,
 		"message": "登录成功",
