@@ -540,6 +540,11 @@ func AddPostTag(c *gin.Context) {
 		})
 		return
 	}
+	pt := model.PostTag{
+		PostID: post_id,
+		Name:   name,
+	}
+	service.CreatePostTag(&pt)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "添加标签成功",
