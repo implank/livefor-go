@@ -54,7 +54,7 @@ func GetSysMessageCount(userID uint64, t int, date string) (
 }
 func GetSysMessages(userID uint64, off uint64, lim uint64) (
 	sysMessages []model.SysMessage, count uint64) {
-	global.DB.Order("create_at desc").Where("user_id = ?", userID).
+	global.DB.Order("create_time desc").Where("user_id = ?", userID).
 		Limit(lim).Offset(off).Find(&sysMessages).
 		Limit(-1).Offset(-1).Count(&count)
 	return sysMessages, count

@@ -116,6 +116,22 @@ paths:
             type: string
       tags:
       - Portal
+  /portal/get_green:
+    post:
+      description: get user green status
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": "获取成功", "data": greenStatus}'
+          schema:
+            type: string
+      tags:
+      - Portal
   /portal/get_greenbirds:
     post:
       description: GetGreenbirds

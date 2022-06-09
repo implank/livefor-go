@@ -45,6 +45,31 @@
                 }
             }
         },
+        "/portal/get_green": {
+            "post": {
+                "description": "get user green status",
+                "tags": [
+                    "Portal"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"获取成功\", \"data\": greenStatus}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/portal/get_greenbirds": {
             "post": {
                 "description": "GetGreenbirds",
