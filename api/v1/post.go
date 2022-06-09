@@ -445,6 +445,19 @@ func DeleteComment(c *gin.Context) {
 	post.Comment -= 1
 	service.UpdatePost(&post)
 	service.DeleteComment(commentID)
+	var exp int = 0
+	if comment.Like >= 10 {
+		exp += 5
+	} else if comment.Like >= 50 {
+		exp += 5
+	} else if comment.Like >= 150 {
+		exp += 5
+	} else if comment.Like >= 500 {
+		exp += 10
+	} else if comment.Like >= 1000 {
+		exp += 10
+	}
+	service.UpdateUserExp(post.UserID, -exp)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "删除评论成功",
