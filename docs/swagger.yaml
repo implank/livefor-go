@@ -3,6 +3,8 @@ definitions:
     properties:
       content:
         type: string
+      level:
+        type: integer
       section:
         type: integer
       tags:
@@ -298,6 +300,27 @@ paths:
             type: string
       tags:
       - Post
+  /post/comment/delete:
+    post:
+      description: Delete a comment
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: comment_id
+        in: formData
+        name: comment_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success": true, "message": "用户评论成功"}'
+          schema:
+            type: string
+      tags:
+      - Post
   /post/comment/like:
     post:
       consumes:
@@ -336,6 +359,27 @@ paths:
       responses:
         "200":
           description: '{"success": true, "message": "发布成功"}'
+          schema:
+            type: string
+      tags:
+      - Post
+  /post/delete:
+    post:
+      description: delete post and sub user exp
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      - description: post_id
+        in: formData
+        name: post_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"success": true, "message": "删除文章成功"}'
           schema:
             type: string
       tags:

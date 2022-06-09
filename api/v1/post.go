@@ -422,6 +422,13 @@ func CreateComment(c *gin.Context) {
 	})
 }
 
+// DeleteComment doc
+// @description  Delete a comment
+// @Tags         Post
+// @Param        user_id  formData  string  true  "user_id"
+// @Param        comment_id  formData  string  true  "comment_id"
+// @Success      200      {string}  string  "{"success": true, "message": "用户评论成功"}"
+// @Router       /post/comment/delete [post]
 func DeleteComment(c *gin.Context) {
 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
 	user, notFound := service.QueryUserByUserID(userID)

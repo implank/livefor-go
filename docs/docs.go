@@ -335,6 +335,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/post/comment/delete": {
+            "post": {
+                "description": "Delete a comment",
+                "tags": [
+                    "Post"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "comment_id",
+                        "name": "comment_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\": true, \"message\": \"用户评论成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/post/comment/like": {
             "post": {
                 "description": "Like a comment",
@@ -394,6 +426,38 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"success\": true, \"message\": \"发布成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/delete": {
+            "post": {
+                "description": "delete post and sub user exp",
+                "tags": [
+                    "Post"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "post_id",
+                        "name": "post_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\": true, \"message\": \"删除文章成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -931,6 +995,9 @@ const docTemplate = `{
             "properties": {
                 "content": {
                     "type": "string"
+                },
+                "level": {
+                    "type": "integer"
                 },
                 "section": {
                     "type": "integer"
