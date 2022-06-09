@@ -186,14 +186,25 @@ func GetSysMessage(c *gin.Context) {
 // GetHotPosts doc
 // @Description get posts which get the most highest views
 // @Tags Portal
-// @Success 200 {string} string "{"status": true, "message": "获取成功", "data": posts}"
+// @Success 200 {string} string "{"status": true, "message": "获取成功", "data": data}"
 // @Router /portal/get_hot_posts [post]
 func GetHotPosts(c *gin.Context) {
 	posts := service.GetHotPosts()
+	var data [](map[string]interface{})
+	for _, post := range posts {
+		data = append(data, map[string]interface{}{
+			"post":                post,
+			"create_time_seconds": time.Since(post.CreateTime).Seconds(),
+			"create_time_minutes": time.Since(post.CreateTime).Minutes(),
+			"create_time_hours":   time.Since(post.CreateTime).Hours(),
+			"create_time_days":    time.Since(post.CreateTime).Hours() / 24,
+			"create_time_weeks":   time.Since(post.CreateTime).Hours() / 24 / 7,
+		})
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "获取成功",
-		"data":    posts,
+		"data":    data,
 	})
 }
 

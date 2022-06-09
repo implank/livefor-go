@@ -82,7 +82,7 @@ func SearchPosts(
 	return posts, count
 }
 func GetHotPosts() (posts []model.Post) {
-	global.DB.Order("views desc").Limit(4).Find(&posts)
+	global.DB.Order("views desc").Limit(5).Find(&posts)
 	return posts
 }
 func GetUserPosts(
