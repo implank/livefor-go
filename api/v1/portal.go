@@ -185,3 +185,20 @@ func GetHotPosts(c *gin.Context) {
 		"data":    posts,
 	})
 }
+
+// GetGreenStatus doc
+// @Description get user green status
+// @Tags Portal
+// @Param user_id formData string true "user_id"
+// @Success 200 {string} string "{"status": true, "message": "获取成功", "data": greenStatus}"
+// @Router /portal/get_green [post]
+func GetGreen(c *gin.Context) {
+	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	t5 := service.GetSysMessageCount(userID, 5, "")
+	t6 := service.GetSysMessageCount(userID, 6, "")
+	c.JSON(http.StatusOK, gin.H{
+		"success":          true,
+		"completeuserinfo": t5,
+		"uploaduseravatar": t6,
+	})
+}

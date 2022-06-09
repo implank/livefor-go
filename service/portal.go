@@ -43,8 +43,13 @@ func CreateSysMessage(sm *model.SysMessage) (err error) {
 }
 func GetSysMessageCount(userID uint64, t int, date string) (
 	count int) {
-	global.DB.Model(&model.SysMessage{}).Where("user_id = ? and type = ?", userID, t).
-		Where("date = ?", date).Count(&count)
+	if date == "" {
+		global.DB.Model(&model.SysMessage{}).Where("user_id = ? and type = ?", userID, t).
+			Count(&count)
+	} else {
+		global.DB.Model(&model.SysMessage{}).Where("user_id = ? and type = ?", userID, t).
+			Where("date = ?", date).Count(&count)
+	}
 	return count
 }
 func GetSysMessages(userID uint64, off uint64, lim uint64) (

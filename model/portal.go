@@ -12,6 +12,9 @@ type Greenbird struct {
 //createcomment 1
 //read post 2
 //levelup 3
+//ReadGreenbird 4
+//Complete user info 5
+//Upload user avatar 6
 type SysMessage struct {
 	UserID     uint64    `json:"user_id"`
 	CreateTime time.Time `gorm:"default:Now()" json:"create_time"`

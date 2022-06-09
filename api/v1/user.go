@@ -5,7 +5,6 @@ import (
 	"gin-project/model"
 	"gin-project/service"
 	"gin-project/utils"
-	"math/rand"
 	"net/http"
 	"path"
 	"strconv"
@@ -44,12 +43,19 @@ func Register(c *gin.Context) {
 			Password: password1,
 			Email:    email,
 		}
-		user.ConfirmNumber = rand.New(rand.NewSource(time.Now().UnixNano())).Int() % 1000000
+		// user.ConfirmNumber = rand.New(rand.NewSource(time.Now().UnixNano())).Int() % 1000000
 		service.CreateUser(&user)
-		utils.SendRegisterEmail(email, user.ConfirmNumber)
+		// utils.SendRegisterEmail(email, user.ConfirmNumber)
+		sm := model.SysMessage{
+			UserID: user.UserID,
+			Date:   time.Now().Format(utils.DAYFORMAT),
+			Type:   4,
+			Times:  1,
+		}
+		service.CreateSysMessage(&sm)
 		c.JSON(http.StatusOK, gin.H{
 			"status":  true,
-			"message": "注册成功，请前往邮箱激活账号",
+			"message": "注册成功",
 		})
 		return
 	}
@@ -210,6 +216,18 @@ func UpdateInfo(c *gin.Context) {
 	user.Sex = sex
 	user.Age = age
 	service.UpdateUser(&user)
+	if sex != "" && age != 0 {
+		count := service.GetSysMessageCount(userID, 5, "")
+		if count < 1 {
+			sm := model.SysMessage{
+				UserID: user.UserID,
+				Date:   time.Now().Format(utils.DAYFORMAT),
+				Type:   5,
+				Times:  1,
+			}
+			service.CreateSysMessage(&sm)
+		}
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"status":  true,
 		"message": "修改成功",
@@ -244,6 +262,16 @@ func UploadAvatar(c *gin.Context) {
 	url := "http://43.138.77.133:81/media/avatars/" + saveName
 	user.AvatarUrl = url
 	service.UpdateUser(&user)
+	count := service.GetSysMessageCount(userid, 6, "")
+	if count < 1 {
+		sm := model.SysMessage{
+			UserID: user.UserID,
+			Date:   time.Now().Format(utils.DAYFORMAT),
+			Type:   6,
+			Times:  1,
+		}
+		service.CreateSysMessage(&sm)
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"success":    true,
 		"message":    "上传成功",

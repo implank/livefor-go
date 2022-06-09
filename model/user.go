@@ -14,7 +14,7 @@ type User struct {
 	Bandate       time.Time `gorm:"default:Now()" json:"bandate"`
 	Sex           string    `gorm:"size:255;default:'未知'" json:"sex"`
 	Age           uint64    `gorm:"default:0" json:"age"`
-	AvatarUrl     string    `gorm:"default:null" json:"avatar_url"`
+	AvatarUrl     string    `gorm:"default:http://43.138.77.133:81/media/avatars/default.jpg" json:"avatar_url"`
 	Confirmed     bool      `gorm:"default:false" json:"confirmed"`
 	ConfirmNumber int       `gorm:"default:0" json:"confirmed_number"`
 }
