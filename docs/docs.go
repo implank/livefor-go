@@ -106,7 +106,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"status\": true, \"message\": \"获取成功\", \"data\": posts}",
+                        "description": "{\"status\": true, \"message\": \"获取成功\", \"data\": data}",
                         "schema": {
                             "type": "string"
                         }
