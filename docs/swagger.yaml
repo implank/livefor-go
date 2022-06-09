@@ -108,6 +108,22 @@ paths:
             type: string
       tags:
       - Portal
+  /portal/check_noob:
+    post:
+      description: check user is noob
+      parameters:
+      - description: user_id
+        in: formData
+        name: user_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"status": true, "message": ""}'
+          schema:
+            type: string
+      tags:
+      - Portal
   /portal/get_banned_users:
     post:
       description: GetBannedUsers

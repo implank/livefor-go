@@ -41,6 +41,31 @@ const docTemplate = `{
                 }
             }
         },
+        "/portal/check_noob": {
+            "post": {
+                "description": "check user is noob",
+                "tags": [
+                    "Portal"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/portal/get_banned_users": {
             "post": {
                 "description": "GetBannedUsers",
