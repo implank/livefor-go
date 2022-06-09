@@ -224,3 +224,27 @@ func GetGreen(c *gin.Context) {
 		"uploaduseravatar": t6,
 	})
 }
+
+// CheckNoob doc
+// @Description check user is noob
+// @Tags Portal
+// @Param user_id formData string true "user_id"
+// @Success 200 {string} string "{"status": true, "message": ""}"
+// @Router /portal/check_noob [post]
+func CheckNoob(c *gin.Context) {
+	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	user, _ := service.QueryUserByUserID(userID)
+	if user.Isnoob {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "您已经是新手了",
+		})
+	} else {
+		user.Isnoob = false
+		service.UpdateUser(&user)
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": "",
+		})
+	}
+}

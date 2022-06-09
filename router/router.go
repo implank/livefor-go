@@ -45,5 +45,6 @@ func InitRouter(Router *gin.RouterGroup) {
 		PortalRouter.POST("/get_hot_posts", v1.GetHotPosts)
 		PortalRouter.POST("/get_user_message", v1.GetSysMessage)
 		PortalRouter.POST("/get_green", v1.GetGreen)
+		PortalRouter.POST("/check_noob", v1.CheckNoob)
 	}
 }

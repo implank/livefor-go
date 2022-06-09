@@ -17,4 +17,5 @@ type User struct {
 	AvatarUrl     string    `gorm:"default:http://43.138.77.133:81/media/avatars/default.jpg" json:"avatar_url"`
 	Confirmed     bool      `gorm:"default:false" json:"confirmed"`
 	ConfirmNumber int       `gorm:"default:0" json:"confirmed_number"`
+	Isnoob        bool      `gorm:"default:true" json:"isnoob"`
 }
