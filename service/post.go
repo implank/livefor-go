@@ -35,6 +35,7 @@ func GetPosts(off uint64, leng uint64, section uint64, order string, tags []mode
 			Limit(leng).Offset(off).Find(&post).
 			Limit(-1).Offset(-1).Count(&count)
 	} else {
+		println(level)
 		var str string
 		var id []string
 		for _, tag := range tags {
@@ -46,7 +47,7 @@ func GetPosts(off uint64, leng uint64, section uint64, order string, tags []mode
 				"select *	from posts where exists("+
 					" select * from post_tags "+
 					" where post_tags.post_id=posts.post_id and post_tags.name in ("+str+"))"+
-					" and section = ? and level <= ", section, level).
+					" and section = ? and level <= ?", section, level).
 			Find(&post)
 		count = (uint64)(len(post))
 		global.DB.Order(order).Limit(leng).Offset(off).
@@ -54,7 +55,7 @@ func GetPosts(off uint64, leng uint64, section uint64, order string, tags []mode
 				"select *	from posts where exists( "+
 					" select * from post_tags "+
 					" where post_tags.post_id=posts.post_id and post_tags.name in ("+str+"))"+
-					" and section = ? and level <= ", section, level).
+					" and section = ? and level <= ?", section, level).
 			Find(&post)
 	}
 	return post, count
