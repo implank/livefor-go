@@ -41,25 +41,28 @@ func UpdateUserExp(userID uint64, exp int) {
 	user, _ := QueryUserByUserID(userID)
 	user.Exp += exp
 	if exp >= 0 {
-		for i := user.UserLevel; i < MAXLEVEL; i++ {
+		for i := user.Level; i < MAXLEVEL; i++ {
 			if user.Exp >= EXPGAP[i] {
-				user.UserLevel = i + 1
+				user.Level = i + 1
 				user.Exp -= EXPGAP[i]
-				sm := model.SysMessage{
-					UserID: userID,
-					Date:   time.Now().Format(utils.DAYFORMAT),
-					Type:   3,
-					Times:  i + 1,
+				count := GetSysMessageCount(userID, 3, "")
+				if count == 0 {
+					sm := model.SysMessage{
+						UserID: userID,
+						Date:   time.Now().Format(utils.DAYFORMAT),
+						Type:   3,
+						Times:  i + 1,
+					}
+					CreateSysMessage(&sm)
 				}
-				CreateSysMessage(&sm)
 			} else {
 				break
 			}
 		}
 	} else {
-		for i := user.UserLevel; i > 0; i-- {
+		for i := user.Level; i > 0; i-- {
 			if user.Exp < 0 {
-				user.UserLevel = i - 1
+				user.Level = i - 1
 				user.Exp += EXPGAP[i-1]
 			} else {
 				break

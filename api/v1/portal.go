@@ -146,10 +146,18 @@ func GetNotifications(c *gin.Context) {
 	} else {
 		notifications, count = service.GetCommentNotification(userID, off, len)
 	}
+	var data [](map[string]interface{})
+	for _, notification := range notifications {
+		user, _ := service.QueryUserByUserID(notification.UserID)
+		data = append(data, map[string]interface{}{
+			"notification": notification,
+			"user_avatar":  user.AvatarUrl,
+		})
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "获取成功",
-		"data":    notifications,
+		"data":    data,
 		"count":   count,
 	})
 }

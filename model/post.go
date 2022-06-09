@@ -16,6 +16,7 @@ type Post struct {
 	Section         uint64    `gorm:"default:0" json:"section"`
 	CreateTime      time.Time `gorm:"default:Now()" json:"create_time"`
 	LastCommentTime time.Time `gorm:"default:Now()" json:"last_comment_time"`
+	Level           int       `gorm:"default:0" json:"level"`
 }
 type PostLike struct {
 	PostID        uint64 `gorm:"primary_key;auto_increment:false" json:"post_id"`
@@ -58,6 +59,7 @@ type CreatePostData struct {
 	Title   string `json:"title"`
 	Content string `json:"content"`
 	Section uint64 `json:"section"`
+	Level   int    `json:"level"`
 	Tags    []Tag  `json:"tags"`
 }
 type LikeCommentData CommentLike

@@ -30,7 +30,8 @@ type Notification struct {
 	UserID     uint64    `json:"user_id"`
 	CreateTime time.Time `gorm:"default:Now()" json:"create_time"`
 	Username   string    `grom:"size:255" json:"username"`
-	PostID     uint64    `gorm:"not null" json:"post_id"`
+	PostID     uint64    `gorm:"default:0" json:"post_id"`
+	CommentID  uint64    `gorm:"default:0" json:"comment_id"`
 	Title      string    `gorm:"type:longtext" json:"title"`
 	Type       int       `json:"type"`
 }

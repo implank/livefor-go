@@ -45,6 +45,7 @@ func CreatePost(c *gin.Context) {
 		Title:    data.Title,
 		Content:  data.Content,
 		Section:  data.Section,
+		Level:    data.Level,
 	}
 	service.CreatePost(&post)
 	count := service.GetSysMessageCount(data.UserID, 0, time.Now().Format(utils.DAYFORMAT))
@@ -73,6 +74,13 @@ func CreatePost(c *gin.Context) {
 	})
 }
 
+// DeletePost doc
+// @description  delete post and sub user exp
+// @Tags         Post
+// @Param        user_id  formData  string  true  "user_id"
+// @Param        post_id  formData  string  true  "post_id"
+// @Success      200   {string}  string                "{"success": true, "message": "删除文章成功"}"
+// @Router       /post/delete [post]
 func DeletePost(c *gin.Context) {
 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
 	user, notFound := service.QueryUserByUserID(userID)
@@ -84,8 +92,43 @@ func DeletePost(c *gin.Context) {
 		return
 	}
 	postID, _ := strconv.ParseUint(c.Request.FormValue("post_id"), 0, 64)
+	post, _ := service.QueryPost(postID)
 	service.DeletePost(postID)
-
+	var exp int = 0
+	if post.Like >= 10 {
+		exp += 5
+	} else if post.Like >= 50 {
+		exp += 5
+	} else if post.Like >= 150 {
+		exp += 5
+	} else if post.Like >= 500 {
+		exp += 10
+	} else if post.Like >= 1000 {
+		exp += 10
+	}
+	if post.Comment >= 10 {
+		exp += 5
+	} else if post.Comment >= 30 {
+		exp += 5
+	} else if post.Comment >= 60 {
+		exp += 5
+	} else if post.Comment >= 100 {
+		exp += 5
+	} else if post.Comment >= 200 {
+		exp += 5
+	}
+	if post.Views >= 60 {
+		exp += 5
+	} else if post.Views >= 200 {
+		exp += 5
+	} else if post.Views >= 500 {
+		exp += 5
+	}
+	service.UpdateUserExp(post.UserID, -exp)
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "删除文章成功",
+	})
 }
 
 // GetPosts doc
@@ -115,7 +158,8 @@ func GetPosts(c *gin.Context) {
 		})
 		return
 	}
-	posts, count := service.GetPosts(d.Offset, d.Length, d.Section, order, d.Tags)
+	_user, _ := service.QueryUserByUserID(d.UserID)
+	posts, count := service.GetPosts(d.Offset, d.Length, d.Section, order, d.Tags, _user.Level)
 	var data [](map[string]interface{})
 	for _, post := range posts {
 		tags, _ := service.QueryPostTags(post.PostID)
@@ -199,7 +243,8 @@ func SearchPosts(c *gin.Context) {
 		})
 		return
 	}
-	posts, count := service.SearchPosts(d.Fliters, d.Section, d.Offset, d.Length, order)
+	_user, _ := service.QueryUserByUserID(d.UserID)
+	posts, count := service.SearchPosts(d.Fliters, d.Section, d.Offset, d.Length, order, _user.Level)
 	var data [](map[string]interface{})
 	for _, post := range posts {
 		tags, _ := service.QueryPostTags(post.PostID)
@@ -377,6 +422,28 @@ func CreateComment(c *gin.Context) {
 	})
 }
 
+func DeleteComment(c *gin.Context) {
+	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	user, notFound := service.QueryUserByUserID(userID)
+	if notFound || user.Username != "admin" {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "用户不存在/不是管理员",
+		})
+		return
+	}
+	commentID, _ := strconv.ParseUint(c.Request.FormValue("comment_id"), 0, 64)
+	comment, _ := service.QueryComment(commentID)
+	post, _ := service.QueryPost(comment.PostID)
+	post.Comment -= 1
+	service.UpdatePost(&post)
+	service.DeleteComment(commentID)
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "删除评论成功",
+	})
+}
+
 // LikeComment doc
 // @description  Like a comment
 // @Tags         Post
@@ -425,11 +492,12 @@ func LikeComment(c *gin.Context) {
 		user, _ := service.QueryUserByUserID(data.UserID)
 		post, _ := service.QueryPost(comment.PostID)
 		notification := model.Notification{
-			UserID:   comment.UserID,
-			Username: "@" + user.Username,
-			PostID:   comment.PostID,
-			Title:    "\"" + post.Title + "\"",
-			Type:     1,
+			UserID:    comment.UserID,
+			Username:  "@" + user.Username,
+			PostID:    comment.PostID,
+			CommentID: comment.CommentID,
+			Title:     "\"" + post.Title + "\"",
+			Type:      1,
 		}
 		service.CreateNotification(&notification)
 		if comment.MaxLike == 10 || comment.MaxLike == 50 || comment.MaxLike == 150 {

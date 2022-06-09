@@ -5,8 +5,6 @@ import (
 	"gin-project/model"
 	"gin-project/utils"
 	"strings"
-
-	"github.com/jinzhu/gorm"
 )
 
 func CreatePost(post *model.Post) (err error) {
@@ -17,23 +15,23 @@ func QueryPost(postID uint64) (post model.Post, notFound bool) {
 	notFound = global.DB.First(&post, postID).RecordNotFound()
 	return post, notFound
 }
-func DeletePost(postID uint64) (err error) {
+func DeletePost(postID uint64) {
 	var post model.Post
-	notFound := global.DB.First(&post, postID).RecordNotFound()
-	if notFound {
-		return gorm.ErrRecordNotFound
+	global.DB.First(&post, postID)
+	comments, _, _ := GetPostComments(0, 1000, postID)
+	global.DB.Model(&model.Notification{}).Delete("post_id = ?", postID)
+	for _, comment := range comments {
+		DeleteComment(comment.CommentID)
 	}
-	err = global.DB.Delete(&post).Error
-	return err
 }
 func UpdatePost(post *model.Post) (err error) {
 	err = global.DB.Save(post).Error
 	return
 }
-func GetPosts(off uint64, leng uint64, section uint64, order string, tags []model.Tag) (
+func GetPosts(off uint64, leng uint64, section uint64, order string, tags []model.Tag, level int) (
 	post []model.Post, count uint64) {
 	if len(tags) == 0 {
-		global.DB.Order(order).Where("section = ?", section).
+		global.DB.Order(order).Where("section = ? and level <= ?", section, level).
 			Limit(leng).Offset(off).Find(&post).
 			Limit(-1).Offset(-1).Count(&count)
 	} else {
@@ -48,7 +46,7 @@ func GetPosts(off uint64, leng uint64, section uint64, order string, tags []mode
 				"select *	from posts where exists("+
 					" select * from post_tags "+
 					" where post_tags.post_id=posts.post_id and post_tags.name in ("+str+"))"+
-					" and section = ?", section).
+					" and section = ? and level <= ", section, level).
 			Find(&post)
 		count = (uint64)(len(post))
 		global.DB.Order(order).Limit(leng).Offset(off).
@@ -56,19 +54,19 @@ func GetPosts(off uint64, leng uint64, section uint64, order string, tags []mode
 				"select *	from posts where exists( "+
 					" select * from post_tags "+
 					" where post_tags.post_id=posts.post_id and post_tags.name in ("+str+"))"+
-					" and section = ?", section).
+					" and section = ? and level <= ", section, level).
 			Find(&post)
 	}
 	return post, count
 }
 func SearchPosts(
-	fliters []string, section uint64, off uint64, lim uint64, order string) (
+	fliters []string, section uint64, off uint64, lim uint64, order string, level int) (
 	posts []model.Post, count uint64) {
 	var tmp []model.Post
 	if section == 1926 {
-		global.DB.Order(order).Find(&tmp)
+		global.DB.Order(order).Where("level <= ?", level).Find(&tmp)
 	} else {
-		global.DB.Order(order).Where("section = ?", section).Find(&tmp)
+		global.DB.Order(order).Where("section = ? and level <= ?", section, level).Find(&tmp)
 	}
 	for _, post := range tmp {
 		for _, fliter := range fliters {
@@ -163,14 +161,10 @@ func GetPostComments(
 		Limit(-1).Offset(-1).Count(&count).Error
 	return comments, count, err
 }
-func DeleteComment(commentID uint64) (err error) {
+func DeleteComment(commentID uint64) {
 	var comment model.Comment
-	notFound := global.DB.First(&comment, commentID).RecordNotFound()
-	if notFound {
-		return gorm.ErrRecordNotFound
-	}
-	err = global.DB.Delete(&comment).Error
-	return err
+	global.DB.First(&comment, commentID)
+	global.DB.Model(&model.Notification{}).Delete("comment_id = ?", commentID)
 }
 func CreateCommentLike(commentLike *model.CommentLike) (err error) {
 	err = global.DB.Create(commentLike).Error
