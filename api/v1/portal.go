@@ -86,6 +86,30 @@ func BanUser(c *gin.Context) {
 	})
 }
 
+// UnbanUser doc
+// @Description  UnbanUser
+// @Tags         Portal
+// @Param        user_id  query     int     true  "用户ID"
+// @Success      200      {string}  string  "{"status": true, "message": "解禁成功"}"
+// @Router       /portal/unban_user [post]
+func UnbanUser(c *gin.Context) {
+	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
+	user, notFound := service.QueryUserByUserID(userID)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "用户不存在",
+		})
+		return
+	}
+	user.Bandate = time.Now().Add(-1 * time.Hour)
+	service.UpdateUser(&user)
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "解禁成功",
+	})
+}
+
 // GetBannedUsers doc
 // @Description  GetBannedUsers
 // @Tags         Portal

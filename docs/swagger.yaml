@@ -248,6 +248,22 @@ paths:
             type: string
       tags:
       - Portal
+  /portal/unban_user:
+    post:
+      description: UnbanUser
+      parameters:
+      - description: 用户ID
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: '{"status": true, "message": "解禁成功"}'
+          schema:
+            type: string
+      tags:
+      - Portal
   /portal/upload_file:
     post:
       description: UploadImage

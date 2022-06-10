@@ -257,6 +257,31 @@ const docTemplate = `{
                 }
             }
         },
+        "/portal/unban_user": {
+            "post": {
+                "description": "UnbanUser",
+                "tags": [
+                    "Portal"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": true, \"message\": \"解禁成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/portal/upload_file": {
             "post": {
                 "description": "UploadImage",
