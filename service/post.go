@@ -16,10 +16,10 @@ func QueryPost(postID uint64) (post model.Post, notFound bool) {
 	return post, notFound
 }
 func DeletePost(postID uint64) {
-	var post model.Post
-	global.DB.First(&post, postID)
+	println(postID)
+	global.DB.Where("post_id=?", postID).Delete(&model.Post{})
 	comments, _, _ := GetPostComments(0, 1000, postID)
-	global.DB.Model(&model.Notification{}).Delete("post_id = ?", postID)
+	global.DB.Where("post_id = ?", postID).Delete(&model.Notification{})
 	for _, comment := range comments {
 		DeleteComment(comment.CommentID)
 	}
@@ -35,7 +35,6 @@ func GetPosts(off uint64, leng uint64, section uint64, order string, tags []mode
 			Limit(leng).Offset(off).Find(&post).
 			Limit(-1).Offset(-1).Count(&count)
 	} else {
-		println(level)
 		var str string
 		var id []string
 		for _, tag := range tags {
@@ -165,7 +164,8 @@ func GetPostComments(
 func DeleteComment(commentID uint64) {
 	var comment model.Comment
 	global.DB.First(&comment, commentID)
-	global.DB.Model(&model.Notification{}).Delete("comment_id = ?", commentID)
+	global.DB.Delete(&comment)
+	global.DB.Where("comment_id = ?", commentID).Delete(&model.Notification{})
 }
 func CreateCommentLike(commentLike *model.CommentLike) (err error) {
 	err = global.DB.Create(commentLike).Error
