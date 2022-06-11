@@ -1,2 +1,3 @@
 *.log
-media/
+media/avatars/*
+media/images/*

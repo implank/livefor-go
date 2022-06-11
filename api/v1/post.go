@@ -318,9 +318,23 @@ func LikePost(c *gin.Context) {
 	if err := c.ShouldBindJSON(&data); err != nil {
 		panic(err)
 	}
+	user, notFound := service.QueryUserByUserID(data.UserID)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "用户不存在",
+		})
+		return
+	}
+	post, notFound := service.QueryPost(data.PostID)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "文章不存在",
+		})
+		return
+	}
 	postLike, notFound := service.QueryPostLike(data.PostID, data.UserID)
-	user, _ := service.QueryUserByUserID(data.UserID)
-	post, _ := service.QueryPost(data.PostID)
 	if !notFound {
 		post.Like -= 1
 		service.DeletePostLike(&postLike)
@@ -369,8 +383,23 @@ func LikePost(c *gin.Context) {
 // @Router       /post/comment/create [post]
 func CreateComment(c *gin.Context) {
 	userID, _ := strconv.ParseUint(c.Request.FormValue("user_id"), 0, 64)
-	user, _ := service.QueryUserByUserID(userID)
+	user, notFound := service.QueryUserByUserID(userID)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "用户不存在",
+		})
+		return
+	}
 	postID, _ := strconv.ParseUint(c.Request.FormValue("post_id"), 0, 64)
+	post, notFound := service.QueryPost(postID)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "文章不存在",
+		})
+		return
+	}
 	content := c.Request.FormValue("content")
 	comment := model.Comment{
 		UserID:      userID,
@@ -387,7 +416,6 @@ func CreateComment(c *gin.Context) {
 		})
 		return
 	}
-	post, _ := service.QueryPost(postID)
 	post.Comment += 1
 	if post.Comment == 10 || post.Comment == 30 || post.Comment == 60 ||
 		post.Comment == 100 || post.Comment == 200 {
@@ -478,8 +506,15 @@ func LikeComment(c *gin.Context) {
 	if err := c.ShouldBindJSON(&data); err != nil {
 		panic(err)
 	}
+	comment, notFound := service.QueryComment(data.CommentID)
+	if notFound {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "评论不存在",
+		})
+		return
+	}
 	commentLike, notFound := service.QueryCommentLike(data.CommentID, data.UserID)
-	comment, _ := service.QueryComment(data.CommentID)
 	if data.LikeOrDislike {
 		msg = "点赞"
 	} else {
